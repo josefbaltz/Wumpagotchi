@@ -29,6 +29,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	wump.AddHandler(basicCommands)
+
 	err = wump.Open()
 	if err != nil {
 		fmt.Println("==Wumpagotchi Error==\n" + err.Error())

@@ -23,22 +23,26 @@ type Wumpus struct {
 func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"adopt" {
-		if len(messageContent) > 1 {
-			NewWumpus := Wumpus{
-				Credits:   0,
-				Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
-				Color:     0,
-				Age:       0,
-				Health:    10,
-				Hunger:    10,
-				Energy:    10,
-				Happiness: 10,
-				Sick:      false,
+		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
+			if len(messageContent) > 1 {
+				NewWumpus := Wumpus{
+					Credits:   0,
+					Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
+					Color:     0,
+					Age:       0,
+					Health:    10,
+					Hunger:    10,
+					Energy:    10,
+					Happiness: 10,
+					Sick:      false,
+				}
+				UpdateWumpus(event.Author.ID, NewWumpus)
+				session.ChannelMessageSend(event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
+			} else {
+				session.ChannelMessageSend(event.ChannelID, "Your Wumpus needs a name to be adopted!")
 			}
-			UpdateWumpus(event.Author.ID, NewWumpus)
-			session.ChannelMessageSend(event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
 		} else {
-			session.ChannelMessageSend(event.ChannelID, "Your Wumpus needs a name to be adopted!")
+			session.ChannelMessageSend(event.ChannelID, "You already have a Wumpus, and their name is "+UserWumpus.Name+"!")
 		}
 	}
 	if messageContent[0] == CommandPrefix+"view" {
@@ -77,7 +81,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				},
 			},
 			Image: &discordgo.MessageEmbedImage{
-				URL: "https://images-na.ssl-images-amazon.com/images/I/81xQBb5jRzL._SY355_.jpg",
+				URL: "https://i.redd.it/vj6r64pcee711.gif",
 			},
 		}
 		session.ChannelMessageSendEmbed(event.ChannelID, ViewEmbed)

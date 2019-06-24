@@ -18,6 +18,7 @@ type Wumpus struct {
 	Energy    int
 	Happiness int
 	Sick      bool
+	Sleeping  bool
 }
 
 func game(session *discordgo.Session, event *discordgo.MessageCreate) {
@@ -35,6 +36,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Energy:    10,
 					Happiness: 10,
 					Sick:      false,
+					Sleeping:  false,
 				}
 				UpdateWumpus(event.Author.ID, NewWumpus)
 				sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")

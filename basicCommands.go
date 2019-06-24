@@ -32,6 +32,11 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Value:  "Visit the store",
 					Inline: true,
 				},
+				&discordgo.MessageEmbedField{
+					Name:   CommandPrefix + "view",
+					Value:  "View how your Wumpus is doing",
+					Inline: true,
+				},
 			},
 		}
 		sendEmbed(session, event, event.ChannelID, HelpEmbed)
@@ -61,7 +66,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				Fields: []*discordgo.MessageEmbedField{
 					&discordgo.MessageEmbedField{
 						Name:   "Gummy Gem",
-						Value:  "Some hardened! Has some warnings on the side, probably not important.",
+						Value:  "A yummy snack! Has some warnings on the side, probably not important.",
 						Inline: false,
 					},
 				},

@@ -34,7 +34,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				},
 			},
 		}
-		session.ChannelMessageSendEmbed(event.ChannelID, HelpEmbed)
+		sendEmbed(session, event, event.ChannelID, HelpEmbed)
 		return
 	}
 	if messageContent[0] == CommandPrefix+"store" {

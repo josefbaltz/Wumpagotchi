@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+WumpagotchiCredentials.json
+test\.bat
+
+Wumpagotchi\.exe~

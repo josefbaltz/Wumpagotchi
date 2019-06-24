@@ -34,7 +34,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				Happiness: 10,
 				Sick:      false,
 			}
-			AddWumpus(event.Author.ID, NewWumpus)
+			UpdateWumpus(event.Author.ID, NewWumpus)
 			session.ChannelMessageSend(event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
 		} else {
 			session.ChannelMessageSend(event.ChannelID, "Your Wumpus needs a name to be adopted!")

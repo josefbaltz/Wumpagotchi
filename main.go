@@ -17,6 +17,7 @@ func init() {
 
 //DiscordToken - Discord API Token
 var DiscordToken string
+var CommandPrefix = "w."
 
 func main() {
 	if DiscordToken == "" {

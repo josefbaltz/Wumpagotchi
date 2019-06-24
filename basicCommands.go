@@ -23,7 +23,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   CommandPrefix + "adopt",
+					Name:   CommandPrefix + "adopt <Wumpus Name>",
 					Value:  "Adopt a Wumpus!",
 					Inline: true,
 				},

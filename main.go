@@ -28,12 +28,13 @@ func main() {
 		os.Exit(0)
 	}
 
-	ctx = context.Background()
+	ctx := context.Background()
 	gcp, gcpErr := datastore.NewClient(ctx, "wumpagotchi", option.WithCredentialsFile("./WumpagotchiCredentials.json"))
 	if gcpErr != nil {
 		fmt.Println("==Datastore Error==\nFailed to create GCP Client\n" + gcpErr.Error())
 		os.Exit(1)
 	}
+	gcp.Close()
 
 	wump, err := discordgo.New("Bot " + DiscordToken)
 	if err != nil {

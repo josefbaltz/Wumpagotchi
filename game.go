@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -39,5 +40,46 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		} else {
 			session.ChannelMessageSend(event.ChannelID, "Your Wumpus needs a name to be adopted!")
 		}
+	}
+	if messageContent[0] == CommandPrefix+"view" {
+		UserWumpus, err := GetWumpus(event.Author.ID)
+		if err != nil {
+			session.ChannelMessageSend(event.ChannelID, "Something went wrong, please contact the devs!")
+		}
+		ViewEmbed := &discordgo.MessageEmbed{
+			Color: 0x669966, //Wumpus Leaf Green
+			Title: UserWumpus.Name,
+			Fields: []*discordgo.MessageEmbedField{
+				&discordgo.MessageEmbedField{
+					Name:   "Age",
+					Value:  strconv.Itoa(UserWumpus.Age),
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
+					Name:   "Health",
+					Value:  strconv.Itoa(UserWumpus.Health),
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
+					Name:   "Hunger",
+					Value:  strconv.Itoa(UserWumpus.Hunger),
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
+					Name:   "Energy",
+					Value:  strconv.Itoa(UserWumpus.Energy),
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
+					Name:   "Happiness",
+					Value:  strconv.Itoa(UserWumpus.Happiness),
+					Inline: false,
+				},
+			},
+			Image: &discordgo.MessageEmbedImage{
+				URL: "https://images-na.ssl-images-amazon.com/images/I/81xQBb5jRzL._SY355_.jpg",
+			},
+		}
+		session.ChannelMessageSendEmbed(event.ChannelID, ViewEmbed)
 	}
 }

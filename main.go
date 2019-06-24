@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"cloud.google.com/go/datastore"
 	"github.com/bwmarrin/discordgo"
@@ -56,4 +57,16 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 	wump.Close()
+}
+
+func sendMessage(session *discordgo.Session, event *discordgo.MessageCreate, channel string, message string) {
+	sentMessage, _ := session.ChannelMessageSend(channel, message)
+	time.Sleep(12 * time.Second)
+	session.ChannelMessageDelete(sentMessage.ChannelID, sentMessage.ID)
+}
+
+func sendEmbed(session *discordgo.Session, event *discordgo.MessageCreate, channel string, embed *discordgo.MessageEmbed) {
+	sentMessage, _ := session.ChannelMessageSendEmbed(channel, embed)
+	time.Sleep(24 * time.Second)
+	session.ChannelMessageDelete(sentMessage.ChannelID, sentMessage.ID)
 }

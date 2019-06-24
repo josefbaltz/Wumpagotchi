@@ -1,35 +1,17 @@
 package main
 
 type Wumpus struct {
-	Name       string
-	Color      int
-	Age        int
-	Evolution  int
-	Weight     int
-	Health     int
-	State      string
-	Hunger     int
-	Energy     int
-	Discipline int
-	Sickness   bool
+	Credits   int
+	Name      string
+	Color     int
+	Age       int
+	Health    int
+	Hunger    int
+	Energy    int
+	Happiness int
+	Sick      bool
 }
 
 func game() {
-
-}
-
-func feed() {
-
-}
-
-func sleep() {
-
-}
-
-func discipline() {
-
-}
-
-func play() {
 
 }

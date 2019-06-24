@@ -21,6 +21,9 @@ func init() {
 //DiscordToken - Discord API Token
 var DiscordToken string
 var CommandPrefix = "w."
+var gcp *datastore.Client
+var gcpErr error
+var ctx = context.Background()
 
 func main() {
 	if DiscordToken == "" {
@@ -28,13 +31,11 @@ func main() {
 		os.Exit(0)
 	}
 
-	ctx := context.Background()
-	gcp, gcpErr := datastore.NewClient(ctx, "wumpagotchi", option.WithCredentialsFile("./WumpagotchiCredentials.json"))
+	gcp, gcpErr = datastore.NewClient(ctx, "wumpagotchi", option.WithCredentialsFile("./WumpagotchiCredentials.json"))
 	if gcpErr != nil {
 		fmt.Println("==Datastore Error==\nFailed to create GCP Client\n" + gcpErr.Error())
 		os.Exit(1)
 	}
-	gcp.Close()
 
 	wump, err := discordgo.New("Bot " + DiscordToken)
 	if err != nil {
@@ -43,6 +44,7 @@ func main() {
 	}
 
 	wump.AddHandler(basicCommands)
+	wump.AddHandler(game)
 
 	err = wump.Open()
 	if err != nil {

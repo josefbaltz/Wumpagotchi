@@ -11,7 +11,7 @@ import (
 
 func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
-	if messageContent[0] == CommandPrefix+"help" {
+	if messageContent[0] == CommandPrefix+"help" && !event.Author.Bot {
 		HelpEmbed := &discordgo.MessageEmbed{
 			Color:       0x669966, //Wumpus Leaf Green
 			Title:       "Wumpagotchi Help",
@@ -37,12 +37,17 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Value:  "View how your Wumpus is doing",
 					Inline: true,
 				},
+				&discordgo.MessageEmbedField{
+					Name:	CommandPrefix + "play",
+					Value:	"Go mining with your wumpus",
+					Inline: true,
+				}
 			},
 		}
 		sendEmbed(session, event, event.ChannelID, HelpEmbed)
 		return
 	}
-	if messageContent[0] == CommandPrefix+"store" {
+	if messageContent[0] == CommandPrefix+"store" && !event.Author.Bot {
 		store := dgwidgets.NewPaginator(session, event.Message.ChannelID)
 		store.Add(&discordgo.MessageEmbed{
 			Color:       0x669966, //Wumpus Leaf Green

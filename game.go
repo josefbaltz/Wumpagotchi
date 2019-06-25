@@ -26,7 +26,7 @@ type Wumpus struct {
 
 func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
-	if messageContent[0] == CommandPrefix+"adopt" {
+	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
 		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
 			if len(messageContent) > 1 {
 				NewWumpus := Wumpus{
@@ -53,7 +53,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			return
 		}
 	}
-	if messageContent[0] == CommandPrefix+"view" {
+	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID)
 		if err != nil {
 			sendMessage(session, event, event.ChannelID, "Something went wrong, please contact the devs!")
@@ -101,7 +101,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		sendEmbed(session, event, event.ChannelID, ViewEmbed)
 		return
 	}
-	if messageContent[0] == CommandPrefix+"play" {
+	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID)
 		if err != nil {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first, they are always looking for a friend!")

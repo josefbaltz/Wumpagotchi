@@ -118,6 +118,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png"
 			return
 		}
+		sendMessage(session, event, event.ChannelID, StateURL)
 		ViewEmbed := &discordgo.MessageEmbed{
 			Color: 0x669966, //Wumpus Leaf Green
 			Title: UserWumpus.Name,

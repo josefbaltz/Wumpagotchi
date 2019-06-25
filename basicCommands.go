@@ -18,6 +18,11 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 			Description: "We're here to help!",
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{
+					Name:   "What is Wumpagotchi?",
+					Value:  "Wumpagotchi is Tamagotchi but with Wumpus!\nStart by adopting a wumpus with w.adopt, type messages to gain credit, and play games with w.play, you can buy things to take care of your Wumpus with w.store",
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
 					Name:   CommandPrefix + "help",
 					Value:  "Displays this text",
 					Inline: true,

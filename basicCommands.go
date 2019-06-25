@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -13,10 +12,6 @@ import (
 func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"help" && !event.Author.Bot {
-		err := session.ChannelMessageDelete(event.ChannelID, event.ID)
-		if err != nil {
-			fmt.Println(err)
-		}
 		HelpEmbed := &discordgo.MessageEmbed{
 			Color:       0x669966, //Wumpus Leaf Green
 			Title:       "Wumpagotchi Help",
@@ -58,10 +53,6 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 		return
 	}
 	if messageContent[0] == CommandPrefix+"store" && !event.Author.Bot {
-		err := session.ChannelMessageDelete(event.ChannelID, event.ID)
-		if err != nil {
-			fmt.Println(err)
-		}
 		store := dgwidgets.NewPaginator(session, event.Message.ChannelID)
 		store.Add(&discordgo.MessageEmbed{
 			Color:       0x669966, //Wumpus Leaf Green

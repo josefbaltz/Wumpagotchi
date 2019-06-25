@@ -1,8 +1,10 @@
 package main
 
 import (
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -96,6 +98,76 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			},
 		}
 		sendEmbed(session, event, event.ChannelID, ViewEmbed)
+		return
+	}
+	if messageContent[0] == CommandPrefix+"play" {
+		UserWumpus, err := GetWumpus(event.Author.ID)
+		if err != nil {
+			sendMessage(session, event, event.ChannelID, "Something went wrong, please contact the devs!")
+			return
+		}
+		if UserWumpus.Energy <= 2 {
+			sendMessage(session, event, event.ChannelID, UserWumpus.Name+" doesn't have enough energy to play!")
+			return
+		}
+		UserWumpus.Energy -= 2
+		UserWumpus.Credits -= 10
+		rand.Seed(time.Now().UnixNano())
+		gemSpot := rand.Intn(6)
+		GameFields := []*discordgo.MessageEmbedField{
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+		}
+		GameEmbed := &discordgo.MessageEmbed{
+			Color:  0x669966, //Wumpus Leaf Green
+			Title:  "Find the gem!",
+			Fields: GameFields,
+			Image: &discordgo.MessageEmbedImage{
+				URL: "https://i.redd.it/vj6r64pcee711.gif",
+			},
+		}
+		SentMessage, _ := session.ChannelMessageSendEmbed(event.ChannelID, GameEmbed)
+		for i := 0; i <= 2; i++ {
+			wumpusGuess := rand.Intn(6)
+			if wumpusGuess == gemSpot {
+				GameFields[gemSpot].Name = "♦"
+				session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
+				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!")
+				UserWumpus.Credits += 30
+				UserWumpus.Happiness += 2
+				break
+			}
+			GameFields[wumpusGuess].Name = "░"
+			session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
+			time.Sleep(1 * time.Second)
+			if i == 2 {
+				sendMessage(session, event, event.ChannelID, "No gems found!")
+				break
+			}
+		}
+		UpdateWumpus(event.Author.ID, UserWumpus)
 		return
 	}
 }

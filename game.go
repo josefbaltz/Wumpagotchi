@@ -158,9 +158,9 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Inline: false,
 				},
 			},
-			Image: &discordgo.MessageEmbedImage{
+			/*Image: &discordgo.MessageEmbedImage{
 				URL: StateURL,
-			},
+			},*/
 		}
 		sendEmbed(session, event, event.ChannelID, ViewEmbed)
 		return
@@ -228,6 +228,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			return
 		}
 		for i := 0; i <= 2; i++ {
+			time.Sleep(2 * time.Second)
 			wumpusGuess := rand.Intn(6)
 			if wumpusGuess == gemSpot {
 				GameEmbed.Fields[gemSpot].Name = "❗"
@@ -243,7 +244,6 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			GameEmbed.Fields[wumpusGuess].Name = "..."
 			GameEmbed.Fields[wumpusGuess].Value = "⬛"
 			session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
-			time.Sleep(2 * time.Second)
 			if i == 2 {
 				sendMessage(session, event, event.ChannelID, "No gems found!\n-10Ꞡ\n-2 Energy")
 				UpdateWumpus(event.Author.ID, UserWumpus)

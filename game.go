@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"image/png"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -70,100 +72,133 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
-		var StateURL = " "
+
 		var State = " "
-		if UserWumpus.Energy > 7 {
-			State = "Hyper"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
-		}
-		if UserWumpus.Happiness > 7 {
-			State = "Ecstatic"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
-		}
-		if UserWumpus.Energy > 8 && UserWumpus.Happiness > 8 && UserWumpus.Health > 8 && UserWumpus.Hunger > 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
-			State = "Joyous (+10Ꞡ every 2 hours)"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Joyous.png"
-		}
-		if UserWumpus.Energy <= 3 {
-			State = "Hurt"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Tired.png"
-		}
-		if UserWumpus.Health <= 3 {
-			State = "Hurt"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-		}
-		if UserWumpus.Happiness <= 3 {
-			State = "Depressed"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-		}
-		if UserWumpus.Hunger <= 3 {
-			State = "Hungry"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-		}
-		if UserWumpus.Happiness <= 1 {
-			State = "Depressed"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Depressed.png"
-		}
-		if UserWumpus.Hunger == 0 {
-			State = "Starving"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-		}
-		if UserWumpus.Sick {
-			State = "Sick"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png"
-		}
+		var b bytes.Buffer
 		if UserWumpus.Sleeping {
 			State = "Sleeping"
-			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png"
+			if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png", true, UserWumpus)); err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Sick {
+			State = "Sick"
+			if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png", false, UserWumpus)); err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Hunger == 0 {
+			State = "Starving"
+			if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png", false, UserWumpus)); err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Happiness <= 1 {
+			State = "Depressed"
+			if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Depressed.png", false, UserWumpus)); err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Hunger <= 3 {
+			State = "Hungry"
+			if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png", false, UserWumpus)); err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Happiness <= 3 {
+			State = "Sad"
+			if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png", false, UserWumpus)); err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Health <= 3 {
+			State = "Hurt"
+			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png", false, UserWumpus))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Energy > 8 && UserWumpus.Happiness > 8 && UserWumpus.Health > 8 && UserWumpus.Hunger > 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
+			State = "Joyous (+10Ꞡ every 2 hours)"
+			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Joyous.png", false, UserWumpus))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Happiness > 7 {
+			State = "Ecstatic"
+			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png", false, UserWumpus))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else if UserWumpus.Energy > 7 {
+			State = "Hyper"
+			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png", false, UserWumpus))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		}
+
 		if UserWumpus.Sick && UserWumpus.Sleeping {
 			State = "Sleeping (Sick)"
 		}
-		ViewEmbed := &discordgo.MessageEmbed{
-			Color: UserWumpus.Color,
-			Title: UserWumpus.Name,
-			Fields: []*discordgo.MessageEmbedField{
-				&discordgo.MessageEmbedField{
-					Name:   "Credits",
-					Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
-					Inline: false,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "Status",
-					Value:  State,
-					Inline: false,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "Age",
-					Value:  strconv.Itoa(UserWumpus.Age),
-					Inline: false,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "Health",
-					Value:  strconv.Itoa(UserWumpus.Health),
-					Inline: false,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "Hunger",
-					Value:  strconv.Itoa(UserWumpus.Hunger),
-					Inline: false,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "Energy",
-					Value:  strconv.Itoa(UserWumpus.Energy),
-					Inline: false,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "Happiness",
-					Value:  strconv.Itoa(UserWumpus.Happiness),
-					Inline: false,
-				},
-			},
-			Image: &discordgo.MessageEmbedImage{
-				URL: StateURL,
-			},
+
+		WumpusImageFile := &discordgo.File{
+			Name:        "Wumpus.png",
+			ContentType: "image/png",
+			Reader:      &b,
 		}
-		sendEmbed(session, event, event.ChannelID, ViewEmbed)
+
+		ms := &discordgo.MessageSend{
+			Embed: &discordgo.MessageEmbed{
+				Color: UserWumpus.Color,
+				Title: UserWumpus.Name,
+				Fields: []*discordgo.MessageEmbedField{
+					&discordgo.MessageEmbedField{
+						Name:   "Credits",
+						Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "Status",
+						Value:  State,
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "Age",
+						Value:  strconv.Itoa(UserWumpus.Age),
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "Health",
+						Value:  strconv.Itoa(UserWumpus.Health),
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "Hunger",
+						Value:  strconv.Itoa(UserWumpus.Hunger),
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "Energy",
+						Value:  strconv.Itoa(UserWumpus.Energy),
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "Happiness",
+						Value:  strconv.Itoa(UserWumpus.Happiness),
+						Inline: false,
+					},
+				},
+				Image: &discordgo.MessageEmbedImage{
+					URL: "attachment://" + WumpusImageFile.Name,
+				},
+			},
+			Files: []*discordgo.File{WumpusImageFile},
+		}
+		session.ChannelMessageSendComplex(event.ChannelID, ms)
 		return
 	}
 	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {

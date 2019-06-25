@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"net/http"
 
@@ -8,22 +9,44 @@ import (
 )
 
 //LeafedWumpus Leafifies a Wumpus
-func LeafedWumpus(BaseImageURL string, SleepingLeaf bool) {
+func LeafedWumpus(BaseImageURL string, SleepingLeaf bool, UserWumpus Wumpus) (WumpusImage image.Image) {
 	var baseImage image.Image
 	var leafImage image.Image
-	baseURL, _ := http.Get(BaseImageURL)
+	var err error
+	baseURL, err := http.Get(BaseImageURL)
+	if err != nil {
+		fmt.Println("ERROR RETRIEVING IMAGE" + err.Error())
+		return
+	}
 	defer baseURL.Body.Close()
-	baseImage, _, _ = image.Decode(baseURL.Body)
-
-	if SleepingLeaf == false {
-		leafURL, _ := http.Get("https://orangeflare.me/imagehosting/Wumpagotchi/Leaf.png")
-		defer baseURL.Body.Close()
-		leafImage, _, _ = image.Decode(leafURL.Body)
-	} else {
-		leafURL, _ := http.Get("https://orangeflare.me/imagehosting/Wumpagotchi/AsleepLeaf.png")
-		defer baseURL.Body.Close()
-		leafImage, _, _ = image.Decode(leafURL.Body)
+	baseImage, _, err = image.Decode(baseURL.Body)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	imaging.PasteCenter(baseImage, leafImage)
+	if SleepingLeaf == false {
+		leafURL, err := http.Get("https://orangeflare.me/imagehosting/Wumpagotchi/Leaf.png")
+		if err != nil {
+			fmt.Println("ERROR RETRIEVING IMAGE" + err.Error())
+			return
+		}
+		defer baseURL.Body.Close()
+		leafImage, _, err = image.Decode(leafURL.Body)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		leafURL, err := http.Get("https://orangeflare.me/imagehosting/Wumpagotchi/AsleepLeaf.png")
+		if err != nil {
+			fmt.Println("ERROR RETRIEVING IMAGE" + err.Error())
+			return
+		}
+		defer baseURL.Body.Close()
+		leafImage, _, err = image.Decode(leafURL.Body)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	return imaging.Overlay(baseImage, leafImage, image.Pt(0, 0), 1.0)
 }

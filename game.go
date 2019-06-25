@@ -58,10 +58,66 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID)
 		if err != nil {
-			sendMessage(session, event, event.ChannelID, "Something went wrong, please contact the devs!")
+			sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
-		var State string
+		var StateURL = " "
+		var State = " "
+		if UserWumpus.Energy > 7 {
+			State = "Hyper"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
+			return
+		}
+		if UserWumpus.Happiness > 7 {
+			State = "Ecstatic"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
+			return
+		}
+		if UserWumpus.Energy < 8 && UserWumpus.Happiness < 8 && UserWumpus.Health < 8 && UserWumpus.Hunger < 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
+			State = "Joyous (+10Ꞡ every 2 hours)"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Glorious.png"
+			return
+		}
+		if UserWumpus.Energy < 4 {
+			State = "Hurt"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Tired.png"
+			return
+		}
+		if UserWumpus.Health < 4 {
+			State = "Hurt"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
+			return
+		}
+		if UserWumpus.Happiness < 4 {
+			State = "Depressed"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
+			return
+		}
+		if UserWumpus.Hunger < 4 {
+			State = "Hungry"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
+			return
+		}
+		if UserWumpus.Happiness < 2 {
+			State = "Depressed"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Depressed.png"
+			return
+		}
+		if UserWumpus.Hunger == 0 {
+			State = "Starving"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
+			return
+		}
+		if UserWumpus.Sick {
+			State = "Sick"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png"
+			return
+		}
+		if UserWumpus.Sleeping {
+			State = "Sleeping"
+			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png"
+			return
+		}
 		ViewEmbed := &discordgo.MessageEmbed{
 			Color: 0x669966, //Wumpus Leaf Green
 			Title: UserWumpus.Name,
@@ -103,63 +159,8 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				},
 			},
 			Image: &discordgo.MessageEmbedImage{
-				URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png",
+				URL: StateURL,
 			},
-		}
-		if UserWumpus.Energy > 7 {
-			State = "Hyper"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
-			return
-		}
-		if UserWumpus.Happiness > 7 {
-			State = "Ecstatic"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
-			return
-		}
-		if UserWumpus.Energy < 8 && UserWumpus.Happiness < 8 && UserWumpus.Health < 8 && UserWumpus.Hunger < 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
-			State = "Joyous (+10Ꞡ every 2 hours)"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Glorious.png"
-			return
-		}
-		if UserWumpus.Energy < 4 {
-			State = "Hurt"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Tired.png"
-			return
-		}
-		if UserWumpus.Health < 4 {
-			State = "Hurt"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
-		}
-		if UserWumpus.Happiness < 4 {
-			State = "Depressed"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
-		}
-		if UserWumpus.Hunger < 4 {
-			State = "Hungry"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
-		}
-		if UserWumpus.Happiness < 2 {
-			State = "Depressed"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Depressed.png"
-			return
-		}
-		if UserWumpus.Hunger == 0 {
-			State = "Starving"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
-		}
-		if UserWumpus.Sick {
-			State = "Sick"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png"
-			return
-		}
-		if UserWumpus.Sleeping {
-			State = "Sleeping"
-			ViewEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png"
-			return
 		}
 		sendEmbed(session, event, event.ChannelID, ViewEmbed)
 		return
@@ -233,12 +234,9 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				GameEmbed.Fields[gemSpot].Value = "💎"
 				GameEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/EpicGamer.png"
 				session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
-				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!")
+				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!\n+20Ꞡ\n+2 Happiness\n-2 Energy")
 				UserWumpus.Credits += 30
 				UserWumpus.Happiness += 2
-				sendMessage(session, event, event.ChannelID, "+20Ꞡ")
-				sendMessage(session, event, event.ChannelID, "+2 Happiness")
-				sendMessage(session, event, event.ChannelID, "-2 Energy")
 				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}
@@ -247,9 +245,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
 			time.Sleep(2 * time.Second)
 			if i == 2 {
-				sendMessage(session, event, event.ChannelID, "No gems found!")
-				sendMessage(session, event, event.ChannelID, "-10Ꞡ")
-				sendMessage(session, event, event.ChannelID, "-2 Energy")
+				sendMessage(session, event, event.ChannelID, "No gems found!\n-10Ꞡ\n-2 Energy")
 				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}

@@ -40,17 +40,21 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				}
 				UpdateWumpus(event.Author.ID, NewWumpus)
 				sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
+				return
 			} else {
 				sendMessage(session, event, event.ChannelID, "Your Wumpus needs a name to be adopted!")
+				return
 			}
 		} else {
 			sendMessage(session, event, event.ChannelID, "You already have a Wumpus, and their name is "+UserWumpus.Name+"!")
+			return
 		}
 	}
 	if messageContent[0] == CommandPrefix+"view" {
 		UserWumpus, err := GetWumpus(event.Author.ID)
 		if err != nil {
 			sendMessage(session, event, event.ChannelID, "Something went wrong, please contact the devs!")
+			return
 		}
 		ViewEmbed := &discordgo.MessageEmbed{
 			Color: 0x669966, //Wumpus Leaf Green
@@ -92,5 +96,6 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			},
 		}
 		sendEmbed(session, event, event.ChannelID, ViewEmbed)
+		return
 	}
 }

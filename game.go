@@ -163,7 +163,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first, they are always looking for a friend!")
 			return
 		}
-		if UserWumpus.Energy <= 2 {
+		if UserWumpus.Energy < 2 {
 			sendMessage(session, event, event.ChannelID, UserWumpus.Name+" doesn't have enough energy to play!")
 			return
 		}
@@ -171,8 +171,12 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			sendMessage(session, event, event.ChannelID, "You need 10Ꞡ to play!")
 			return
 		}
-		UserWumpus.Energy -= 2
-		UserWumpus.Credits -= 10
+		if !(UserWumpus.Energy <= 0) {
+			UserWumpus.Energy -= 2
+		}
+		if !(UserWumpus.Credits <= 0) {
+			UserWumpus.Credits -= 10
+		}
 		rand.Seed(time.Now().UnixNano())
 		gemSpot := rand.Intn(6)
 		GameEmbed := &discordgo.MessageEmbed{
@@ -230,6 +234,9 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!\n+20Ꞡ\n+2 Happiness\n-2 Energy")
 				UserWumpus.Credits += 30
 				UserWumpus.Happiness += 2
+				if UserWumpus.Happiness > 10 {
+					UserWumpus.Happiness = 10
+				}
 				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}

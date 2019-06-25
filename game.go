@@ -75,23 +75,23 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			State = "Joyous (+10Ꞡ every 2 hours)"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Joyous.png"
 		}
-		if UserWumpus.Energy < 4 {
+		if UserWumpus.Energy <= 3 {
 			State = "Hurt"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Tired.png"
 		}
-		if UserWumpus.Health < 4 {
+		if UserWumpus.Health <= 3 {
 			State = "Hurt"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
 		}
-		if UserWumpus.Happiness < 4 {
+		if UserWumpus.Happiness <= 3 {
 			State = "Depressed"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
 		}
-		if UserWumpus.Hunger < 4 {
+		if UserWumpus.Hunger <= 3 {
 			State = "Hungry"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
 		}
-		if UserWumpus.Happiness < 2 {
+		if UserWumpus.Happiness <= 1 {
 			State = "Depressed"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Depressed.png"
 		}
@@ -100,7 +100,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
 		}
 		if UserWumpus.Sick {
-			State = "Sick"
+			State = State + " (Sick)"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png"
 		}
 		if UserWumpus.Sleeping {

@@ -127,32 +127,32 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		GameFields = []*discordgo.MessageEmbedField{
 			&discordgo.MessageEmbedField{
 				Name:   "R",
-				Value:  " ",
+				Value:  "R",
 				Inline: true,
 			},
 			&discordgo.MessageEmbedField{
 				Name:   "R",
-				Value:  " ",
+				Value:  "R",
 				Inline: true,
 			},
 			&discordgo.MessageEmbedField{
 				Name:   "R",
-				Value:  " ",
+				Value:  "R",
 				Inline: true,
 			},
 			&discordgo.MessageEmbedField{
 				Name:   "R",
-				Value:  " ",
+				Value:  "R",
 				Inline: true,
 			},
 			&discordgo.MessageEmbedField{
 				Name:   "R",
-				Value:  " ",
+				Value:  "R",
 				Inline: true,
 			},
 			&discordgo.MessageEmbedField{
 				Name:   "R",
-				Value:  " ",
+				Value:  "R",
 				Inline: true,
 			},
 		}
@@ -169,6 +169,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!")
 				UserWumpus.Credits += 30
 				UserWumpus.Happiness += 2
+				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}
 			GameFields[wumpusGuess].Name = "░"
@@ -176,10 +177,10 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			time.Sleep(1 * time.Second)
 			if i == 2 {
 				sendMessage(session, event, event.ChannelID, "No gems found!")
+				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}
 		}
-		UpdateWumpus(event.Author.ID, UserWumpus)
 		return
 	}
 }

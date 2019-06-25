@@ -53,14 +53,12 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 					UpdateWumpus(event.Author.ID, NewWumpus)
 					sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
 					return
-				} else {
-					sendMessage(session, event, event.ChannelID, "Your Wumpus' name must be 15 characters or less!")
-					return
 				}
-			} else {
-				sendMessage(session, event, event.ChannelID, "Your Wumpus needs a name to be adopted!")
+				sendMessage(session, event, event.ChannelID, "Your Wumpus' name must be 15 characters or less!")
 				return
 			}
+			sendMessage(session, event, event.ChannelID, "Your Wumpus needs a name to be adopted!")
+			return
 		} else {
 			sendMessage(session, event, event.ChannelID, "You already have a Wumpus, and their name is "+UserWumpus.Name+"!")
 			return

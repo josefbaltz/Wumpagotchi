@@ -100,12 +100,15 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
 		}
 		if UserWumpus.Sick {
-			State = State + " (Sick)"
+			State = "Sick"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png"
 		}
 		if UserWumpus.Sleeping {
 			State = "Sleeping"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png"
+		}
+		if UserWumpus.Sick && UserWumpus.Sleeping {
+			State = "Sleeping (Sick)"
 		}
 		ViewEmbed := &discordgo.MessageEmbed{
 			Color: 0x669966, //Wumpus Leaf Green

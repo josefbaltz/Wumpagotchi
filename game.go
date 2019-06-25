@@ -66,57 +66,46 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if UserWumpus.Energy > 7 {
 			State = "Hyper"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
-			return
 		}
 		if UserWumpus.Happiness > 7 {
 			State = "Ecstatic"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
-			return
 		}
 		if UserWumpus.Energy < 8 && UserWumpus.Happiness < 8 && UserWumpus.Health < 8 && UserWumpus.Hunger < 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
 			State = "Joyous (+10Ꞡ every 2 hours)"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Glorious.png"
-			return
 		}
 		if UserWumpus.Energy < 4 {
 			State = "Hurt"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Tired.png"
-			return
 		}
 		if UserWumpus.Health < 4 {
 			State = "Hurt"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
 		}
 		if UserWumpus.Happiness < 4 {
 			State = "Depressed"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
 		}
 		if UserWumpus.Hunger < 4 {
 			State = "Hungry"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
 		}
 		if UserWumpus.Happiness < 2 {
 			State = "Depressed"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Depressed.png"
-			return
 		}
 		if UserWumpus.Hunger == 0 {
 			State = "Starving"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sad.png"
-			return
 		}
 		if UserWumpus.Sick {
 			State = "Sick"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Sick.png"
-			return
 		}
 		if UserWumpus.Sleeping {
 			State = "Sleeping"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Asleep.png"
-			return
 		}
 		sendMessage(session, event, event.ChannelID, StateURL)
 		ViewEmbed := &discordgo.MessageEmbed{
@@ -159,9 +148,9 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Inline: false,
 				},
 			},
-			/*Image: &discordgo.MessageEmbedImage{
+			Image: &discordgo.MessageEmbedImage{
 				URL: StateURL,
-			},*/
+			},
 		}
 		sendEmbed(session, event, event.ChannelID, ViewEmbed)
 		return

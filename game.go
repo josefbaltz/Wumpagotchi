@@ -31,23 +31,28 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
 		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
 			if len(messageContent) > 1 {
-				newColor, _ := strconv.Atoi(randomcolor.GetRandomColorInHex())
-				NewWumpus := Wumpus{
-					Credits:   0,
-					Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
-					Color:     newColor,
-					Age:       0,
-					Health:    10,
-					Hunger:    10,
-					Energy:    10,
-					Happiness: 10,
-					Sick:      false,
-					Sleeping:  false,
-					Left:      false,
+				if len(messageContent[1]) < 15 {
+					newColor, _ := strconv.Atoi(randomcolor.GetRandomColorInHex())
+					NewWumpus := Wumpus{
+						Credits:   0,
+						Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
+						Color:     newColor,
+						Age:       0,
+						Health:    10,
+						Hunger:    10,
+						Energy:    10,
+						Happiness: 10,
+						Sick:      false,
+						Sleeping:  false,
+						Left:      false,
+					}
+					UpdateWumpus(event.Author.ID, NewWumpus)
+					sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
+					return
+				} else {
+					sendMessage(session, event, event.ChannelID, "Your Wumpus' name must be 15 characters or less!")
+					return
 				}
-				UpdateWumpus(event.Author.ID, NewWumpus)
-				sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
-				return
 			} else {
 				sendMessage(session, event, event.ChannelID, "Your Wumpus needs a name to be adopted!")
 				return

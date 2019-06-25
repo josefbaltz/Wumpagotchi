@@ -10,7 +10,7 @@ func messageCredits(session *discordgo.Session, event *discordgo.MessageCreate) 
 	if strings.HasPrefix(event.Content, CommandPrefix) || event.Author.Bot {
 		return
 	}
-	UserWumpus, err := GetWumpus(event.Author.ID)
+	UserWumpus, err := GetWumpus(event.Author.ID, true)
 	if err != nil {
 		return
 	}

@@ -17,9 +17,12 @@ func UpdateWumpus(UserID string, NewWumpus Wumpus) (err error) {
 }
 
 //GetWumpus - Retrieves a wumpus from the database
-func GetWumpus(UserID string) (UserWumpus Wumpus, err error) {
+func GetWumpus(UserID string, ignoreWarning bool) (UserWumpus Wumpus, err error) {
 	userKey := datastore.NameKey("User", UserID, nil)
 	if err := gcp.Get(ctx, userKey, &UserWumpus); err != nil {
+		if ignoreWarning == true {
+			return UserWumpus, err
+		}
 		fmt.Println("==Warning==\nFailed to retrieve Wumpus from Datastore")
 		return UserWumpus, err
 	}

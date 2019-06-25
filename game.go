@@ -29,7 +29,7 @@ type Wumpus struct {
 func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
-		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
+		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil {
 			if len(messageContent) > 1 {
 				if len(strings.TrimPrefix(event.Content, CommandPrefix+"adopt ")) <= 15 {
 					newColor, err := strconv.ParseInt(strings.TrimPrefix(randomcolor.GetRandomColorInHex(), "#"), 16, 0)
@@ -67,7 +67,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		}
 	}
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
-		UserWumpus, err := GetWumpus(event.Author.ID)
+		UserWumpus, err := GetWumpus(event.Author.ID, false)
 		if err != nil {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
@@ -169,7 +169,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		return
 	}
 	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {
-		UserWumpus, err := GetWumpus(event.Author.ID)
+		UserWumpus, err := GetWumpus(event.Author.ID, true)
 		if err != nil {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first, they are always looking for a friend!")
 			return

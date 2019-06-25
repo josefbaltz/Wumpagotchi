@@ -38,10 +38,10 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:	CommandPrefix + "play",
-					Value:	"Go mining with your wumpus",
+					Name:   CommandPrefix + "play",
+					Value:  "Go mining with your wumpus",
 					Inline: true,
-				}
+				},
 			},
 		}
 		sendEmbed(session, event, event.ChannelID, HelpEmbed)

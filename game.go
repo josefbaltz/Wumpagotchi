@@ -104,11 +104,15 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if messageContent[0] == CommandPrefix+"play" {
 		UserWumpus, err := GetWumpus(event.Author.ID)
 		if err != nil {
-			sendMessage(session, event, event.ChannelID, "Something went wrong, please contact the devs!")
+			sendMessage(session, event, event.ChannelID, "You need a Wumpus first, they are always looking for a friend!")
 			return
 		}
 		if UserWumpus.Energy <= 2 {
 			sendMessage(session, event, event.ChannelID, UserWumpus.Name+" doesn't have enough energy to play!")
+			return
+		}
+		if UserWumpus.Credits < 10 {
+			sendMessage(session, event, event.ChannelID, "You need 10 credits to play!")
 			return
 		}
 		UserWumpus.Energy -= 2
@@ -120,33 +124,33 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			Title: "Find the gem!",
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{
-					Name:   "┌",
-					Value:  "█",
+					Name:   "⛏️",
+					Value:  "⬜",
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   "┌",
-					Value:  "█",
+					Name:   "⛏️",
+					Value:  "⬜",
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   "┌",
-					Value:  "█",
+					Name:   "⛏️",
+					Value:  "⬜",
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   "┌",
-					Value:  "█",
+					Name:   "⛏️",
+					Value:  "⬜",
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   "┌",
-					Value:  "█",
+					Name:   "⛏️",
+					Value:  "⬜",
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   "┌",
-					Value:  "█",
+					Name:   "⛏️",
+					Value:  "⬜",
 					Inline: true,
 				},
 			},
@@ -162,8 +166,8 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		for i := 0; i <= 2; i++ {
 			wumpusGuess := rand.Intn(6)
 			if wumpusGuess == gemSpot {
-				GameEmbed.Fields[gemSpot].Name = "¬"
-				GameEmbed.Fields[gemSpot].Value = "♦"
+				GameEmbed.Fields[gemSpot].Name = "❗"
+				GameEmbed.Fields[gemSpot].Value = "💎"
 				session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
 				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!")
 				UserWumpus.Credits += 30
@@ -171,8 +175,8 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}
-			GameEmbed.Fields[wumpusGuess].Name = "¬"
-			GameEmbed.Fields[wumpusGuess].Value = "░"
+			GameEmbed.Fields[wumpusGuess].Name = "..."
+			GameEmbed.Fields[wumpusGuess].Value = "⬛"
 			session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
 			time.Sleep(1 * time.Second)
 			if i == 2 {

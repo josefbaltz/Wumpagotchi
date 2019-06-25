@@ -219,7 +219,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				},
 			},
 			Image: &discordgo.MessageEmbedImage{
-				URL: "https://i.redd.it/vj6r64pcee711.gif",
+				URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Gamer.png",
 			},
 		}
 		SentMessage, err := session.ChannelMessageSendEmbed(event.ChannelID, GameEmbed)
@@ -232,6 +232,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			if wumpusGuess == gemSpot {
 				GameEmbed.Fields[gemSpot].Name = "❗"
 				GameEmbed.Fields[gemSpot].Value = "💎"
+				GameEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/EpicGamer.png"
 				session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
 				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!")
 				UserWumpus.Credits += 30

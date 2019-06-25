@@ -65,7 +65,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{
 					Name:   "Credits",
-					Value:  strconv.Itoa(UserWumpus.Credits),
+					Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
 					Inline: false,
 				},
 				&discordgo.MessageEmbedField{
@@ -112,7 +112,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			return
 		}
 		if UserWumpus.Credits < 10 {
-			sendMessage(session, event, event.ChannelID, "You need 10 credits to play!")
+			sendMessage(session, event, event.ChannelID, "You need 10Ꞡ to play!")
 			return
 		}
 		UserWumpus.Energy -= 2
@@ -172,15 +172,20 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!")
 				UserWumpus.Credits += 30
 				UserWumpus.Happiness += 2
+				sendMessage(session, event, event.ChannelID, "+20Ꞡ")
+				sendMessage(session, event, event.ChannelID, "+2 Happiness")
+				sendMessage(session, event, event.ChannelID, "-2 Energy")
 				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}
 			GameEmbed.Fields[wumpusGuess].Name = "..."
 			GameEmbed.Fields[wumpusGuess].Value = "⬛"
 			session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
-			time.Sleep(1 * time.Second)
+			time.Sleep(2 * time.Second)
 			if i == 2 {
 				sendMessage(session, event, event.ChannelID, "No gems found!")
+				sendMessage(session, event, event.ChannelID, "-10Ꞡ")
+				sendMessage(session, event, event.ChannelID, "-2 Energy")
 				UpdateWumpus(event.Author.ID, UserWumpus)
 				break
 			}

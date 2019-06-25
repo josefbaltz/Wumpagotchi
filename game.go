@@ -115,7 +115,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		UserWumpus.Credits -= 10
 		rand.Seed(time.Now().UnixNano())
 		gemSpot := rand.Intn(6)
-		var GameFields []*discordgo.MessageEmbedField
+		//var GameFields []*discordgo.MessageEmbedField
 		GameEmbed := &discordgo.MessageEmbed{
 			Color: 0x669966, //Wumpus Leaf Green
 			Title: "Find the gem!",

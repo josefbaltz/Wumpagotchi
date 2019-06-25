@@ -115,40 +115,41 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		UserWumpus.Credits -= 10
 		rand.Seed(time.Now().UnixNano())
 		gemSpot := rand.Intn(6)
-		GameFields := []*discordgo.MessageEmbedField{
-			&discordgo.MessageEmbedField{
-				Name:   "█",
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "█",
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "█",
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "█",
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "█",
-				Inline: true,
-			},
-			&discordgo.MessageEmbedField{
-				Name:   "█",
-				Inline: true,
-			},
-		}
+		var GameFields []*discordgo.MessageEmbedField
 		GameEmbed := &discordgo.MessageEmbed{
-			Color: 0x669966, //Wumpus Leaf Green
-			Title: "Find the gem!",
+			Color:  0x669966, //Wumpus Leaf Green
+			Title:  "Find the gem!",
+			Fields: GameFields,
 			Image: &discordgo.MessageEmbedImage{
 				URL: "https://i.redd.it/vj6r64pcee711.gif",
 			},
 		}
-		GameEmbed.Fields = GameFields
+		GameFields = []*discordgo.MessageEmbedField{
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "█",
+				Inline: true,
+			},
+		}
 		SentMessage, err := session.ChannelMessageSendEmbed(event.ChannelID, GameEmbed)
 		if err != nil {
 			fmt.Println("ya hecked up lol, here's the thing\n" + err.Error())

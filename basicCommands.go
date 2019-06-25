@@ -76,7 +76,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					},
 				},
 				Image: &discordgo.MessageEmbedImage{
-					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Gummy.png",
+					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/GummyGem.png",
 				},
 			},
 			&discordgo.MessageEmbed{
@@ -91,7 +91,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					},
 				},
 				Image: &discordgo.MessageEmbedImage{
-					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Salad.png",
+					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Medicine.png",
 				},
 			},
 			&discordgo.MessageEmbed{

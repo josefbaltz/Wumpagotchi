@@ -57,6 +57,11 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			Title: UserWumpus.Name,
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{
+					Name:   "Credits",
+					Value:  strconv.Itoa(UserWumpus.Credits),
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
 					Name:   "Age",
 					Value:  strconv.Itoa(UserWumpus.Age),
 					Inline: false,

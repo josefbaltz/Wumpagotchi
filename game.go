@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -148,7 +149,11 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				URL: "https://i.redd.it/vj6r64pcee711.gif",
 			},
 		}
-		SentMessage, _ := session.ChannelMessageSendEmbed(event.ChannelID, GameEmbed)
+		SentMessage, err := session.ChannelMessageSendEmbed(event.ChannelID, GameEmbed)
+		if err != nil {
+			fmt.Println("ya hecked up lol, here's the thing\n" + err.Error())
+			return
+		}
 		for i := 0; i <= 2; i++ {
 			wumpusGuess := rand.Intn(6)
 			if wumpusGuess == gemSpot {

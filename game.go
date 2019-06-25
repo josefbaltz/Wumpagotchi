@@ -37,7 +37,6 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 						fmt.Println(err)
 						return
 					}
-					fmt.Println(newColor)
 					NewWumpus := Wumpus{
 						Credits:   0,
 						Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),

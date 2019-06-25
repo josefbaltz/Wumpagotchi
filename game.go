@@ -71,7 +71,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			State = "Ecstatic"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png"
 		}
-		if UserWumpus.Energy < 8 && UserWumpus.Happiness < 8 && UserWumpus.Health < 8 && UserWumpus.Hunger < 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
+		if UserWumpus.Energy > 8 && UserWumpus.Happiness > 8 && UserWumpus.Health > 8 && UserWumpus.Hunger > 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
 			State = "Joyous (+10Ꞡ every 2 hours)"
 			StateURL = "https://orangeflare.me/imagehosting/Wumpagotchi/Glorious.png"
 		}

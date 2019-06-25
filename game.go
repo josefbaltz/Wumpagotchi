@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AvraamMavridis/randomcolor"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -30,10 +31,11 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
 		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
 			if len(messageContent) > 1 {
+				newColor, _ := strconv.Atoi(randomcolor.GetRandomColorInHex())
 				NewWumpus := Wumpus{
 					Credits:   0,
 					Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
-					Color:     0,
+					Color:     newColor,
 					Age:       0,
 					Health:    10,
 					Hunger:    10,
@@ -111,7 +113,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			State = "Sleeping (Sick)"
 		}
 		ViewEmbed := &discordgo.MessageEmbed{
-			Color: 0x669966, //Wumpus Leaf Green
+			Color: UserWumpus.Color,
 			Title: UserWumpus.Name,
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{

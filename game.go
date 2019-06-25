@@ -32,7 +32,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
 			if len(messageContent) > 1 {
 				if len(messageContent[1]) < 15 {
-					newColor, _ := strconv.Atoi(randomcolor.GetRandomColorInHex())
+					newColor, err := strconv.ParseInt("0x"+strings.TrimPrefix(randomcolor.GetRandomColorInHex(), "#"), 16, 0)
 					NewWumpus := Wumpus{
 						Credits:   0,
 						Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),

@@ -31,7 +31,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
 		if UserWumpus, err := GetWumpus(event.Author.ID); err != nil {
 			if len(messageContent) > 1 {
-				if len(messageContent[1]) < 15 {
+				if len(strings.TrimPrefix(event.Content, CommandPrefix+"adopt ")) <= 15 {
 					newColor, err := strconv.ParseInt(strings.TrimPrefix(randomcolor.GetRandomColorInHex(), "#"), 16, 0)
 					if err != nil {
 						fmt.Println(err)

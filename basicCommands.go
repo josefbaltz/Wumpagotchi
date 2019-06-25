@@ -50,13 +50,13 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 			Description: "Buy trinkets and things for your Wumpus!",
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{
-					Name:   "Floop",
+					Name:   "Floop (5Ꞡ)",
 					Value:  "A standard diet for any Wumpus!",
 					Inline: false,
 				},
 			},
 			Image: &discordgo.MessageEmbedImage{
-				URL: "https://images-na.ssl-images-amazon.com/images/I/81xQBb5jRzL._SY355_.jpg",
+				URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Floop.png",
 			},
 		},
 			&discordgo.MessageEmbed{
@@ -65,13 +65,13 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				Description: "Buy trinkets and things for your Wumpus!",
 				Fields: []*discordgo.MessageEmbedField{
 					&discordgo.MessageEmbedField{
-						Name:   "Gummy Gem",
+						Name:   "Gummy Gem (10Ꞡ)",
 						Value:  "A yummy snack! Has some warnings on the side, probably not important.",
 						Inline: false,
 					},
 				},
 				Image: &discordgo.MessageEmbedImage{
-					URL: "https://images-na.ssl-images-amazon.com/images/I/81XtDkc7vKL._SL1500_.jpg",
+					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Gummy.png",
 				},
 			},
 			&discordgo.MessageEmbed{
@@ -80,13 +80,28 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				Description: "Buy trinkets and things for your Wumpus!",
 				Fields: []*discordgo.MessageEmbedField{
 					&discordgo.MessageEmbedField{
-						Name:   "Salad",
+						Name:   "Medicine (15Ꞡ)",
+						Value:  "A healthy boost for your Wumpus!",
+						Inline: false,
+					},
+				},
+				Image: &discordgo.MessageEmbedImage{
+					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Salad.png",
+				},
+			},
+			&discordgo.MessageEmbed{
+				Color:       0x669966, //Wumpus Leaf Green
+				Title:       "Store",
+				Description: "Buy trinkets and things for your Wumpus!",
+				Fields: []*discordgo.MessageEmbedField{
+					&discordgo.MessageEmbedField{
+						Name:   "Salad (30Ꞡ)",
 						Value:  "A tasty nutritious salad! Wumpi are known to love these!",
 						Inline: false,
 					},
 				},
 				Image: &discordgo.MessageEmbedImage{
-					URL: "https://media1.s-nbcnews.com/i/newscms/2018_42/1378147/sandra-lee-food-today-main-181018-02_28c1f1d7033c651ae8bd93a89f929201.jpg",
+					URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Salad.png",
 				},
 			})
 		store.SetPageFooters()

@@ -118,6 +118,13 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				fmt.Println(err)
 				return
 			}
+		} else if UserWumpus.Energy <= 3 {
+			State = "Tired"
+			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Tired.png", false, UserWumpus))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		} else if UserWumpus.Energy > 8 && UserWumpus.Happiness > 8 && UserWumpus.Health > 8 && UserWumpus.Hunger > 8 && UserWumpus.Sick == false && UserWumpus.Sleeping == false && UserWumpus.Age > 1 {
 			State = "Joyous (+10Ꞡ every 2 hours)"
 			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Joyous.png", false, UserWumpus))
@@ -222,47 +229,61 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			UserWumpus.Credits -= 10
 		}
 		rand.Seed(time.Now().UnixNano())
-		gemSpot := rand.Intn(6)
-		GameEmbed := &discordgo.MessageEmbed{
-			Color: 0x669966, //Wumpus Leaf Green
-			Title: "Find the gem!",
-			Fields: []*discordgo.MessageEmbedField{
-				&discordgo.MessageEmbedField{
-					Name:   "⛏️",
-					Value:  "⬜",
-					Inline: true,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "⛏️",
-					Value:  "⬜",
-					Inline: true,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "⛏️",
-					Value:  "⬜",
-					Inline: true,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "⛏️",
-					Value:  "⬜",
-					Inline: true,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "⛏️",
-					Value:  "⬜",
-					Inline: true,
-				},
-				&discordgo.MessageEmbedField{
-					Name:   "⛏️",
-					Value:  "⬜",
-					Inline: true,
-				},
-			},
-			Image: &discordgo.MessageEmbedImage{
-				URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Gamer.png",
-			},
+		var b bytes.Buffer
+		WumpusImageFile := &discordgo.File{
+			Name:        "Wumpus.png",
+			ContentType: "image/png",
+			Reader:      &b,
 		}
-		SentMessage, err := session.ChannelMessageSendEmbed(event.ChannelID, GameEmbed)
+		gemSpot := rand.Intn(6)
+
+		ms := &discordgo.MessageSend{
+			Embed: &discordgo.MessageEmbed{
+				Color: UserWumpus.Color, //Wumpus Leaf Green
+				Title: "Find the gem!",
+				Fields: []*discordgo.MessageEmbedField{
+					&discordgo.MessageEmbedField{
+						Name:   "⛏️",
+						Value:  "⬜",
+						Inline: true,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "⛏️",
+						Value:  "⬜",
+						Inline: true,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "⛏️",
+						Value:  "⬜",
+						Inline: true,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "⛏️",
+						Value:  "⬜",
+						Inline: true,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "⛏️",
+						Value:  "⬜",
+						Inline: true,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "⛏️",
+						Value:  "⬜",
+						Inline: true,
+					},
+				},
+				Image: &discordgo.MessageEmbedImage{
+					URL: "attachment://" + WumpusImageFile.Name,
+				},
+			},
+			Files: []*discordgo.File{WumpusImageFile},
+		}
+		if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Gamer.png", false, UserWumpus)); err != nil {
+			fmt.Println(err)
+			return
+		}
+		SentMessage, err := session.ChannelMessageSendComplex(event.ChannelID, ms)
 		if err != nil {
 			fmt.Println("ya hecked up lol, here's the thing\n" + err.Error())
 			return
@@ -271,10 +292,18 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			time.Sleep(2 * time.Second)
 			wumpusGuess := rand.Intn(6)
 			if wumpusGuess == gemSpot {
-				GameEmbed.Fields[gemSpot].Name = "❗"
-				GameEmbed.Fields[gemSpot].Value = "💎"
-				GameEmbed.Image.URL = "https://orangeflare.me/imagehosting/Wumpagotchi/EpicGamer.png"
-				session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
+				ms.Embed.Fields[gemSpot].Name = "❗"
+				ms.Embed.Fields[gemSpot].Value = "💎"
+				if err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/EpicGamer.png", false, UserWumpus)); err != nil {
+					fmt.Println(err)
+					return
+				}
+				msWon := &discordgo.MessageSend{
+					Embed: ms.Embed,
+					Files: []*discordgo.File{WumpusImageFile},
+				}
+				session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
+				SentMessageWon, _ := session.ChannelMessageSendComplex(event.ChannelID, msWon)
 				sendMessage(session, event, event.ChannelID, UserWumpus.Name+" found a gem!\n+20Ꞡ\n+2 Happiness\n-2 Energy")
 				UserWumpus.Credits += 30
 				UserWumpus.Happiness += 2
@@ -282,14 +311,23 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 					UserWumpus.Happiness = 10
 				}
 				UpdateWumpus(event.Author.ID, UserWumpus)
+				time.Sleep(15 * time.Second)
+				session.ChannelMessageDelete(SentMessageWon.ChannelID, SentMessageWon.ID)
 				break
 			}
-			GameEmbed.Fields[wumpusGuess].Name = "..."
-			GameEmbed.Fields[wumpusGuess].Value = "⬛"
-			session.ChannelMessageEditEmbed(SentMessage.ChannelID, SentMessage.ID, GameEmbed)
+			ms.Embed.Fields[wumpusGuess].Name = "..."
+			ms.Embed.Fields[wumpusGuess].Value = "⬛"
+			me := &discordgo.MessageEdit{
+				Embed:   ms.Embed,
+				ID:      SentMessage.ID,
+				Channel: SentMessage.ChannelID,
+			}
+			session.ChannelMessageEditComplex(me)
 			if i == 2 {
 				sendMessage(session, event, event.ChannelID, "No gems found!\n-10Ꞡ\n-2 Energy")
 				UpdateWumpus(event.Author.ID, UserWumpus)
+				time.Sleep(15 * time.Second)
+				session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 				break
 			}
 		}

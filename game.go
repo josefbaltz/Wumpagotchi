@@ -256,6 +256,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if !(UserWumpus.Credits <= 0) {
 			UserWumpus.Credits -= 10
 		}
+		UpdateWumpus(event.Author.ID, UserWumpus)
 		rand.Seed(time.Now().UnixNano())
 		var b bytes.Buffer
 		WumpusImageFile := &discordgo.File{

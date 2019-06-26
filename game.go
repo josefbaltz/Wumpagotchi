@@ -101,6 +101,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		}
 		if UserWumpus.Left == true {
 			leftHandler(UserWumpus, event, session)
+			return
 		}
 		var State = " "
 		var b bytes.Buffer

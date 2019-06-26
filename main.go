@@ -47,6 +47,7 @@ func main() {
 	wump.AddHandler(basicCommands)
 	wump.AddHandler(game)
 	wump.AddHandler(messageCredits)
+	wump.AddHandler(leftHandler)
 
 	err = wump.Open()
 	if err != nil {

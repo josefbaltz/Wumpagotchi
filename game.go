@@ -71,7 +71,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 							Fields: []*discordgo.MessageEmbedField{
 								&discordgo.MessageEmbedField{
 									Name:   "Congrats!",
-									Value:  "you have adopted " + NewWumpus.Name + " as your Wumpus!",
+									Value:  "You have adopted " + NewWumpus.Name + " as your Wumpus!",
 									Inline: false,
 								},
 							},

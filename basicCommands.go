@@ -59,81 +59,104 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 		} else {
 			messageContent := strings.Split(strings.ToLower(event.Content), " ")
 			if len(messageContent) > 1 {
+				// Floop buy message
 				if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "floop" {
 					if UserWumpus.Credits >= 5 {
-						UserWumpus.Credits -= 5
-						UserWumpus.Hunger++
-						UserWumpus.Energy--
-						UpdateWumpus(event.Author.ID, UserWumpus)
-						BuyEmbed := &discordgo.MessageEmbed{
-							Color: UserWumpus.Color,
-							Title: "Floop bought!",
-							Fields: []*discordgo.MessageEmbedField{
-								&discordgo.MessageEmbedField{
-									Name:   "Remaining Credits",
-									Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
-									Inline: false,
+						if UserWumpus.Energy > 1 {
+							UserWumpus.Credits -= 5
+							UserWumpus.Hunger++
+							UserWumpus.Energy--
+							if UserWumpus.Hunger > 10 {
+								UserWumpus.Hunger = 10
+							}
+							UpdateWumpus(event.Author.ID, UserWumpus)
+							BuyEmbed := &discordgo.MessageEmbed{
+								Color: UserWumpus.Color,
+								Title: "Floop bought!",
+								Fields: []*discordgo.MessageEmbedField{
+									&discordgo.MessageEmbedField{
+										Name:   "Remaining Credits",
+										Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
+										Inline: false,
+									},
+									&discordgo.MessageEmbedField{
+										Name:   "Stats Affected:",
+										Value:  "+1 hunger\n-1 energy",
+										Inline: false,
+									},
 								},
-								&discordgo.MessageEmbedField{
-									Name:   "Stats Affected:",
-									Value:  "+1 hunger\n-1 energy",
-									Inline: false,
+								Image: &discordgo.MessageEmbedImage{
+									URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Floop.png",
 								},
-							},
-							Image: &discordgo.MessageEmbedImage{
-								URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Floop.png",
-							},
+							}
+							sendEmbed(session, event, event.ChannelID, BuyEmbed)
+							return
 						}
-						sendEmbed(session, event, event.ChannelID, BuyEmbed)
+						sendMessage(session, event, event.ChannelID, "Your Wumpus is too tired to eat!")
 						return
 					}
 					sendMessage(session, event, event.ChannelID, "You need 5Ꞡ to buy a floop!")
 					return
 				}
+				// Gummy gem buy message
 				if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "gummy" || strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "gummy gem" {
 					if UserWumpus.Credits >= 10 {
-						UserWumpus.Credits -= 10
-						UserWumpus.Hunger++
-						UserWumpus.Happiness++
-						UserWumpus.Energy--
-						UpdateWumpus(event.Author.ID, UserWumpus)
-						BuyEmbed := &discordgo.MessageEmbed{
-							Color: UserWumpus.Color,
-							Title: "Gummy Gem bought!",
-							Fields: []*discordgo.MessageEmbedField{
-								&discordgo.MessageEmbedField{
-									Name:   "Remaining Credits",
-									Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
-									Inline: false,
-								},
-								&discordgo.MessageEmbedField{
-									Name:   "Stats Affected:",
-									Value:  "+1 hunger\n+1 happiness\n-1 energy",
-									Inline: false,
-								},
-							},
-							Image: &discordgo.MessageEmbedImage{
-								URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Gummy.png",
-							},
-						}
-						sendEmbed(session, event, event.ChannelID, BuyEmbed)
-						rand.Seed(time.Now().UnixNano())
-						sickChance := rand.Intn(10)
-						if sickChance == 1 {
-							UserWumpus.Sick = true
+						if UserWumpus.Energy > 1 {
+							UserWumpus.Credits -= 10
+							UserWumpus.Hunger++
+							UserWumpus.Happiness++
+							UserWumpus.Energy--
+							if UserWumpus.Hunger > 10 {
+								UserWumpus.Hunger = 10
+							}
+							if UserWumpus.Happiness > 10 {
+								UserWumpus.Happiness = 10
+							}
 							UpdateWumpus(event.Author.ID, UserWumpus)
-							sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has gotten sick from the gummy gem!")
+							BuyEmbed := &discordgo.MessageEmbed{
+								Color: UserWumpus.Color,
+								Title: "Gummy Gem bought!",
+								Fields: []*discordgo.MessageEmbedField{
+									&discordgo.MessageEmbedField{
+										Name:   "Remaining Credits",
+										Value:  strconv.Itoa(UserWumpus.Credits) + "Ꞡ",
+										Inline: false,
+									},
+									&discordgo.MessageEmbedField{
+										Name:   "Stats Affected:",
+										Value:  "+1 hunger\n+1 happiness\n-1 energy",
+										Inline: false,
+									},
+								},
+								Image: &discordgo.MessageEmbedImage{
+									URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Gummy.png",
+								},
+							}
+							sendEmbed(session, event, event.ChannelID, BuyEmbed)
+							rand.Seed(time.Now().UnixNano())
+							sickChance := rand.Intn(10)
+							if sickChance == 1 {
+								UserWumpus.Sick = true
+								UpdateWumpus(event.Author.ID, UserWumpus)
+								sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has gotten sick from the gummy gem!")
+							}
+							return
 						}
+						sendMessage(session, event, event.ChannelID, "Your Wumpus is too tired to eat!")
 						return
 					}
 					sendMessage(session, event, event.ChannelID, "You need 10Ꞡ to buy a gummy gem!")
 					return
 				}
+				// Medicine buy message
 				if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "medicine" {
 					if UserWumpus.Credits >= 15 {
 						UserWumpus.Credits -= 15
 						UserWumpus.Health += 2
 						UserWumpus.Sick = false
+						if UserWumpus.Health > 10 {
+							UserWumpus.Health = 10
+						}
 						UpdateWumpus(event.Author.ID, UserWumpus)
 						BuyEmbed := &discordgo.MessageEmbed{
 							Color: UserWumpus.Color,
@@ -160,11 +183,18 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					sendMessage(session, event, event.ChannelID, "You need 15Ꞡ to buy medicine!")
 					return
 				}
+				// Salad buy message
 				if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "salad" {
 					if UserWumpus.Credits >= 30 {
 						UserWumpus.Credits -= 30
 						UserWumpus.Health += 2
 						UserWumpus.Hunger += 3
+						if UserWumpus.Health > 10 {
+							UserWumpus.Health = 10
+						}
+						if UserWumpus.Hunger > 10 {
+							UserWumpus.Hunger = 10
+						}
 						UpdateWumpus(event.Author.ID, UserWumpus)
 						BuyEmbed := &discordgo.MessageEmbed{
 							Color: UserWumpus.Color,

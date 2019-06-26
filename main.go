@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"cloud.google.com/go/datastore"
 	"github.com/bwmarrin/discordgo"
@@ -45,6 +46,7 @@ func main() {
 
 	wump.AddHandler(basicCommands)
 	wump.AddHandler(game)
+	wump.AddHandler(messageCredits)
 
 	err = wump.Open()
 	if err != nil {
@@ -56,4 +58,27 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 	wump.Close()
+}
+
+func sendMessage(session *discordgo.Session, event *discordgo.MessageCreate, channel string, message string) {
+	sentMessage, _ := session.ChannelMessageSend(channel, message)
+	time.Sleep(10 * time.Second)
+	err := session.ChannelMessageDelete(event.ChannelID, event.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	session.ChannelMessageDelete(sentMessage.ChannelID, sentMessage.ID)
+}
+
+func sendEmbed(session *discordgo.Session, event *discordgo.MessageCreate, channel string, embed *discordgo.MessageEmbed) {
+	sentMessage, err := session.ChannelMessageSendEmbed(channel, embed)
+	if err != nil {
+		fmt.Println(err)
+	}
+	time.Sleep(15 * time.Second)
+	err = session.ChannelMessageDelete(event.ChannelID, event.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	session.ChannelMessageDelete(sentMessage.ChannelID, sentMessage.ID)
 }

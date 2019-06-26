@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AvraamMavridis/randomcolor"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -34,15 +33,12 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil {
 			if len(messageContent) > 1 {
 				if len(strings.TrimPrefix(event.Content, CommandPrefix+"adopt ")) <= 15 {
-					newColor, err := strconv.ParseInt(strings.TrimPrefix(randomcolor.GetRandomColorInHex(), "#"), 16, 0)
-					if err != nil {
-						fmt.Println(err)
-						return
-					}
+					rand.Seed(time.Now().UnixNano())
+					newColor := rand.Intn(0xFFFFFF + 1)
 					NewWumpus := Wumpus{
 						Credits:   0,
 						Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
-						Color:     int(newColor),
+						Color:     newColor,
 						Age:       0,
 						Health:    10,
 						Hunger:    10,

@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/color"
 	"net/http"
-	"strconv"
 
 	"gopkg.in/go-playground/colors.v1"
 
@@ -39,7 +38,15 @@ func LeafedWumpus(BaseImageURL string, SleepingLeaf bool, UserWumpus Wumpus) (Wu
 		if err != nil {
 			fmt.Println(err)
 		}
-		pc, _ := colors.Parse("#" + strconv.FormatInt(int64(UserWumpus.Color), 16))
+		if err != nil {
+			fmt.Println(err)
+		}
+		pc, err := colors.Parse("#" + fmt.Sprintf("%06x", UserWumpus.Color))
+		if err != nil {
+			fmt.Println("#" + fmt.Sprintf("%06x", UserWumpus.Color))
+			fmt.Println(err)
+			return
+		}
 		WumpusColors := pc.ToRGBA()
 		WumpusColor := color.NRGBA{
 			R: WumpusColors.R,
@@ -77,6 +84,39 @@ func LeafedWumpus(BaseImageURL string, SleepingLeaf bool, UserWumpus Wumpus) (Wu
 		leafImage, _, err = image.Decode(leafURL.Body)
 		if err != nil {
 			fmt.Println(err)
+		}
+		pc, err := colors.Parse("#" + fmt.Sprintf("%06x", UserWumpus.Color))
+		if err != nil {
+			fmt.Println("#" + fmt.Sprintf("%06x", UserWumpus.Color))
+			fmt.Println(err)
+			return
+		}
+		WumpusColors := pc.ToRGBA()
+		WumpusColor := color.NRGBA{
+			R: WumpusColors.R,
+			G: WumpusColors.G,
+			B: WumpusColors.B,
+			A: 255,
+		}
+		LeafColor := color.NRGBA{
+			R: 124,
+			G: 176,
+			B: 81,
+			A: 255,
+		}
+		for x := 618; x < 821; x++ {
+			for y := 312; y < 467; y++ {
+				r, g, b, a := leafImage.At(x, y).RGBA()
+				PixelColor := color.NRGBA{
+					R: uint8(r),
+					G: uint8(g),
+					B: uint8(b),
+					A: uint8(a),
+				}
+				if PixelColor == LeafColor {
+					leafImage.(*image.NRGBA).SetNRGBA(x, y, WumpusColor)
+				}
+			}
 		}
 	}
 

@@ -53,6 +53,35 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 						Left:      false,
 					}
 					UpdateWumpus(event.Author.ID, NewWumpus)
+					var b bytes.Buffer
+					WumpusImageFile := &discordgo.File{
+						Name:        "Wumpus.png",
+						ContentType: "image/png",
+						Reader:      &b,
+					}
+					err = png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png", false, UserWumpus))
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					AdoptMessage := &discordgo.MessageSend{
+						Embed: &discordgo.MessageEmbed{
+							Color: UserWumpus.Color,
+							Title: UserWumpus.Name,
+							Fields: []*discordgo.MessageEmbedField{
+								&discordgo.MessageEmbedField{
+									Name:   "Congrats!",
+									Value:  "you have adopted " + NewWumpus.Name + " as your Wumpus!",
+									Inline: false,
+								},
+							},
+							Image: &discordgo.MessageEmbedImage{
+								URL: "attachment://" + WumpusImageFile.Name,
+							},
+						},
+						Files: []*discordgo.File{WumpusImageFile},
+					}
+					session.ChannelMessageSendComplex(event.ChannelID, AdoptMessage)
 					sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
 					return
 				}

@@ -28,3 +28,13 @@ func GetWumpus(UserID string, ignoreWarning bool) (UserWumpus Wumpus, err error)
 	}
 	return UserWumpus, nil
 }
+
+//DeleteWumpus - Deletes a wumpus from the database, NOT TO BE CONFUSED WITH MARKING ONE AS LEFT
+func DeleteWumpus(UserID string) (err error) {
+	userKey := datastore.NameKey("User", UserID, nil)
+	if err := gcp.Delete(ctx, userKey); err != nil {
+		fmt.Println("==Warning==\nFailed to delete Wumpus form Datastore")
+		return err
+	}
+	return
+}

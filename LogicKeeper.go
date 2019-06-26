@@ -65,6 +65,7 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 	CorrectedWumpus.Sick = UserWumpus.Sick
 	CorrectedWumpus.Sleeping = UserWumpus.Sleeping
 	CorrectedWumpus.Left = UserWumpus.Left
+	CorrectedWumpus.Name = UserWumpus.Name
 	return CorrectedWumpus
 }
 

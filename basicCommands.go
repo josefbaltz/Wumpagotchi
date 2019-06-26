@@ -12,6 +12,7 @@ import (
 func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"help" && !event.Author.Bot {
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
 		HelpEmbed := &discordgo.MessageEmbed{
 			Color:       0x669966, //Wumpus Leaf Green
 			Title:       "Wumpagotchi Help",
@@ -54,6 +55,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 	}
 	// Store commands
 	if messageContent[0] == CommandPrefix+"buy" && !event.Author.Bot {
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
 		if err != nil {
 			go sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
@@ -72,6 +74,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				}
 				UserWumpus = SleepCheck(UserWumpus, session, event)
 				if UserWumpus.Sleeping {
+					UpdateWumpus(event.Author.ID, UserWumpus)
 					return
 				}
 				checkReturn = EnergyCheck(UserWumpus, 1, session, event)
@@ -114,6 +117,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				}
 				UserWumpus = SleepCheck(UserWumpus, session, event)
 				if UserWumpus.Sleeping {
+					UpdateWumpus(event.Author.ID, UserWumpus)
 					return
 				}
 				checkReturn = EnergyCheck(UserWumpus, 1, session, event)
@@ -199,6 +203,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				}
 				UserWumpus = SleepCheck(UserWumpus, session, event)
 				if UserWumpus.Sleeping {
+					UpdateWumpus(event.Author.ID, UserWumpus)
 					return
 				}
 				UserWumpus.Credits -= 30

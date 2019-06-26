@@ -30,6 +30,7 @@ type Wumpus struct {
 func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
 		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil {
 			if len(messageContent) > 1 {
 				if len(strings.TrimPrefix(event.Content, CommandPrefix+"adopt ")) <= 15 {
@@ -92,15 +93,15 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		}
 	}
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
 		UserWumpus, err := GetWumpus(event.Author.ID, false)
 		if err != nil {
 			go sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
-		// Commented bc it ain't ready yet
-		/*if UserWumpus.Left == true {
+		if UserWumpus.Left == true {
 			leftHandler(UserWumpus, event, session)
-		}*/
+		}
 		var State = " "
 		var b bytes.Buffer
 		if UserWumpus.Sleeping {
@@ -250,6 +251,11 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			return
 		}
 		if CreditCheck(UserWumpus, 10, session, event) {
+			return
+		}
+		UserWumpus = SleepCheck(UserWumpus, session, event)
+		if UserWumpus.Sleeping {
+			UpdateWumpus(event.Author.ID, UserWumpus)
 			return
 		}
 		UserWumpus.Energy -= 2

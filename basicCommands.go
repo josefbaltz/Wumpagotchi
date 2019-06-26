@@ -49,13 +49,14 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				},
 			},
 		}
-		sendEmbed(session, event, event.ChannelID, HelpEmbed)
+		go sendEmbed(session, event, event.ChannelID, HelpEmbed)
 		return
 	}
 	// Store commands
 	if messageContent[0] == CommandPrefix+"buy" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
-		if WumpusCheck(err, session, event) {
+		if err != nil {
+			go sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
 		if LeftCheck(UserWumpus, session, event) {
@@ -65,13 +66,16 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if len(messageContent) > 1 {
 			// Floop buy code
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "floop" {
-				if CreditCheck(UserWumpus, 5, session, event) {
+				checkReturn := CreditCheck(UserWumpus, 5, session, event)
+				if checkReturn {
 					return
 				}
-				if SleepCheck(UserWumpus, true, session, event) {
+				UserWumpus = SleepCheck(UserWumpus, session, event)
+				if UserWumpus.Sleeping {
 					return
 				}
-				if EnergyCheck(UserWumpus, 1, session, event) {
+				checkReturn = EnergyCheck(UserWumpus, 1, session, event)
+				if checkReturn {
 					return
 				}
 				UserWumpus.Credits -= 5
@@ -98,19 +102,22 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 						URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Floop.png",
 					},
 				}
-				sendEmbed(session, event, event.ChannelID, BuyEmbed)
+				go sendEmbed(session, event, event.ChannelID, BuyEmbed)
 				return
 			}
 
 			// Gummy gem buy code
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "gummy" || strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "gummy gem" {
-				if CreditCheck(UserWumpus, 10, session, event) {
+				checkReturn := CreditCheck(UserWumpus, 10, session, event)
+				if checkReturn {
 					return
 				}
-				if SleepCheck(UserWumpus, true, session, event) {
+				UserWumpus = SleepCheck(UserWumpus, session, event)
+				if UserWumpus.Sleeping {
 					return
 				}
-				if EnergyCheck(UserWumpus, 1, session, event) {
+				checkReturn = EnergyCheck(UserWumpus, 1, session, event)
+				if checkReturn {
 					return
 				}
 				UserWumpus.Credits -= 10
@@ -138,13 +145,13 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 						URL: "https://orangeflare.me/imagehosting/Wumpagotchi/GummyGem.png",
 					},
 				}
-				sendEmbed(session, event, event.ChannelID, BuyEmbed)
+				go sendEmbed(session, event, event.ChannelID, BuyEmbed)
 				rand.Seed(time.Now().UnixNano())
 				sickChance := rand.Intn(10)
 				if sickChance == 1 {
 					UserWumpus.Sick = true
 					UpdateWumpus(event.Author.ID, UserWumpus)
-					sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has gotten sick from the gummy gem!")
+					go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has gotten sick from the gummy gem!")
 					return
 				}
 				return
@@ -152,7 +159,8 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 
 			// Medicine buy code
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "medicine" {
-				if CreditCheck(UserWumpus, 15, session, event) {
+				checkReturn := CreditCheck(UserWumpus, 15, session, event)
+				if checkReturn {
 					return
 				}
 				UserWumpus.Credits -= 15
@@ -179,16 +187,18 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 						URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Medicine.png",
 					},
 				}
-				sendEmbed(session, event, event.ChannelID, BuyEmbed)
+				go sendEmbed(session, event, event.ChannelID, BuyEmbed)
 				return
 			}
 
 			// Salad buy code
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "salad" {
-				if CreditCheck(UserWumpus, 30, session, event) {
+				checkReturn := CreditCheck(UserWumpus, 30, session, event)
+				if checkReturn {
 					return
 				}
-				if SleepCheck(UserWumpus, true, session, event) {
+				UserWumpus = SleepCheck(UserWumpus, session, event)
+				if UserWumpus.Sleeping {
 					return
 				}
 				UserWumpus.Credits -= 30
@@ -215,7 +225,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 						URL: "https://orangeflare.me/imagehosting/Wumpagotchi/Salad.png",
 					},
 				}
-				sendEmbed(session, event, event.ChannelID, BuyEmbed)
+				go sendEmbed(session, event, event.ChannelID, BuyEmbed)
 				return
 			}
 			return
@@ -251,7 +261,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 				},
 			},
 		}
-		sendEmbed(session, event, event.ChannelID, StoreEmbed)
+		go sendEmbed(session, event, event.ChannelID, StoreEmbed)
 		return
 	}
 	return

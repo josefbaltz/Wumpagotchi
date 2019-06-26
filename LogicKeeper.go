@@ -47,6 +47,14 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 		CorrectedWumpus.Happiness = UserWumpus.Happiness
 	}
 
+	if UserWumpus.Hunger > 10 {
+		CorrectedWumpus.Hunger = 10
+	} else if UserWumpus.Hunger < 0 {
+		CorrectedWumpus.Hunger = 0
+	} else {
+		CorrectedWumpus.Hunger = UserWumpus.Hunger
+	}
+
 	if UserWumpus.Credits < 0 {
 		CorrectedWumpus.Credits = 0
 	} else {
@@ -66,35 +74,26 @@ func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.M
 		UserWumpus.Left = true
 		UserWumpus.Age = 14
 		UpdateWumpus(event.Author.ID, UserWumpus)
-		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
 		return true
 	} else if UserWumpus.Age > 9 && UserWumpus.Left {
-		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
 		return true
 	} else if UserWumpus.Age > 4 && UserWumpus.Age < 10 && UserWumpus.Left {
-		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk\nPlease run w.view")
 		return true
 	} else if UserWumpus.Left {
-		sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere ...\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere ...\nPlease run w.view")
 		return true
 	}
 	//Wumpus hasn't left yet :D
 	return false
 }
 
-// WumpusCheck checks if the user has a Wumpus
-func WumpusCheck(err error, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
-	if err != nil {
-		sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
-		return true
-	}
-	return false
-}
-
 // EnergyCheck checks if the Wumpus has enough energy
 func EnergyCheck(UserWumpus Wumpus, requiredEnergy int, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
 	if UserWumpus.Energy < requiredEnergy {
-		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is too tired!")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is too tired!")
 		return true
 	}
 	return false
@@ -102,24 +101,23 @@ func EnergyCheck(UserWumpus Wumpus, requiredEnergy int, session *discordgo.Sessi
 
 // SleepCheck checks if the Wumpus is sleeping
 // Can possibly wake up the Wumpus if conditions allow for it
-func SleepCheck(UserWumpus Wumpus, canWake bool, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
+func SleepCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.MessageCreate) (UpdatedWumpus Wumpus) {
 	if UserWumpus.Sleeping {
-		if canWake && UserWumpus.Energy > 0 {
+		if UserWumpus.Energy > 0 {
 			UserWumpus.Sleeping = false
-			UpdateWumpus(event.Author.ID, UserWumpus)
-			sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has woken from sleep!")
-			return false
+			go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has woken from sleep!")
+			return UserWumpus
 		}
-		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is sleeping!")
-		return true
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is sleeping!")
+		return UserWumpus
 	}
-	return false
+	return UserWumpus
 }
 
 // CreditCheck checks if the user has enough credits
 func CreditCheck(UserWumpus Wumpus, creditsRequired int, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
 	if UserWumpus.Credits < creditsRequired {
-		sendMessage(session, event, event.ChannelID, "You need "+strconv.Itoa(creditsRequired)+"Ꞡ!")
+		go sendMessage(session, event, event.ChannelID, "You need "+strconv.Itoa(creditsRequired)+"Ꞡ!")
 		return true
 	}
 	return false

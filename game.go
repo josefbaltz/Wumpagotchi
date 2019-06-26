@@ -77,22 +77,24 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 						},
 						Files: []*discordgo.File{WumpusImageFile},
 					}
-					session.ChannelMessageSendComplex(event.ChannelID, AdoptMessage)
+					SentMessage, _ := session.ChannelMessageSendComplex(event.ChannelID, AdoptMessage)
+					session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 					return
 				}
-				sendMessage(session, event, event.ChannelID, "Your Wumpus' name must be 15 characters or less!")
+				go sendMessage(session, event, event.ChannelID, "Your Wumpus' name must be 15 characters or less!")
 				return
 			}
-			sendMessage(session, event, event.ChannelID, "Your Wumpus needs a name to be adopted!")
+			go sendMessage(session, event, event.ChannelID, "Your Wumpus needs a name to be adopted!")
 			return
 		} else {
-			sendMessage(session, event, event.ChannelID, "You already have a Wumpus, and their name is "+UserWumpus.Name+"!")
+			go sendMessage(session, event, event.ChannelID, "You already have a Wumpus, and their name is "+UserWumpus.Name+"!")
 			return
 		}
 	}
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, false)
-		if WumpusCheck(err, session, event) {
+		if err != nil {
+			go sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
 		// Commented bc it ain't ready yet
@@ -230,12 +232,14 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			},
 			Files: []*discordgo.File{WumpusImageFile},
 		}
-		session.ChannelMessageSendComplex(event.ChannelID, ms)
+		SentMessage, _ := session.ChannelMessageSendComplex(event.ChannelID, ms)
+		session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 		return
 	}
 	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
-		if WumpusCheck(err, session, event) {
+		if err != nil {
+			go sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
 		if LeftCheck(UserWumpus, session, event) {

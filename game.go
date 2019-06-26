@@ -100,7 +100,9 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
 			return
 		}
-
+		if UserWumpus.Left == true {
+			leftHandler(UserWumpus, event, session)
+		}
 		var State = " "
 		var b bytes.Buffer
 		if UserWumpus.Sleeping {
@@ -238,6 +240,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	}
 	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
+		LeftCheck(UserWumpus, session, event)
 		if err != nil {
 			sendMessage(session, event, event.ChannelID, "You need a Wumpus first, they are always looking for a friend!")
 			return

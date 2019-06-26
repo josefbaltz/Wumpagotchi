@@ -52,11 +52,13 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 		sendEmbed(session, event, event.ChannelID, HelpEmbed)
 		return
 	}
+	// Store commands
 	if messageContent[0] == CommandPrefix+"buy" && !event.Author.Bot {
 		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil {
 			sendMessage(session, event, event.ChannelID, "You first need a Wumpus to buy stuff for!")
 			return
 		} else {
+			LeftCheck(UserWumpus, session, event)
 			messageContent := strings.Split(strings.ToLower(event.Content), " ")
 			if len(messageContent) > 1 {
 				// Floop buy message

@@ -59,15 +59,15 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 						ContentType: "image/png",
 						Reader:      &b,
 					}
-					err = png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png", false, UserWumpus))
+					err = png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png", false, NewWumpus))
 					if err != nil {
 						fmt.Println(err)
 						return
 					}
 					AdoptMessage := &discordgo.MessageSend{
 						Embed: &discordgo.MessageEmbed{
-							Color: UserWumpus.Color,
-							Title: UserWumpus.Name,
+							Color: NewWumpus.Color,
+							Title: NewWumpus.Name,
 							Fields: []*discordgo.MessageEmbedField{
 								&discordgo.MessageEmbedField{
 									Name:   "Congrats!",
@@ -82,7 +82,6 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 						Files: []*discordgo.File{WumpusImageFile},
 					}
 					session.ChannelMessageSendComplex(event.ChannelID, AdoptMessage)
-					sendMessage(session, event, event.ChannelID, "Congrats, you have adopted "+NewWumpus.Name+" as your Wumpus!")
 					return
 				}
 				sendMessage(session, event, event.ChannelID, "Your Wumpus' name must be 15 characters or less!")

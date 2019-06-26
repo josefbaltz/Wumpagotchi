@@ -41,13 +41,13 @@ func LeafedWumpus(BaseImageURL string, SleepingLeaf bool, UserWumpus Wumpus) (Wu
 		}
 		pc, _ := colors.Parse("#" + strconv.FormatInt(int64(UserWumpus.Color), 16))
 		WumpusColors := pc.ToRGBA()
-		WumpusColor := color.RGBA{
+		WumpusColor := color.NRGBA{
 			R: WumpusColors.R,
 			G: WumpusColors.G,
 			B: WumpusColors.B,
 			A: 255,
 		}
-		LeafColor := color.RGBA{
+		LeafColor := color.NRGBA{
 			R: 124,
 			G: 176,
 			B: 81,
@@ -55,8 +55,15 @@ func LeafedWumpus(BaseImageURL string, SleepingLeaf bool, UserWumpus Wumpus) (Wu
 		}
 		for x := 618; x < 821; x++ {
 			for y := 168; y < 323; y++ {
-				if leafImage.At(x, y) == LeafColor {
-					leafImage.(*image.RGBA).SetRGBA(x, y, WumpusColor)
+				r, g, b, a := leafImage.At(x, y).RGBA()
+				PixelColor := color.NRGBA{
+					R: uint8(r),
+					G: uint8(g),
+					B: uint8(b),
+					A: uint8(a),
+				}
+				if PixelColor == LeafColor {
+					leafImage.(*image.NRGBA).SetNRGBA(x, y, WumpusColor)
 				}
 			}
 		}

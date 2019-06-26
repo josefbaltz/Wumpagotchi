@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/bwmarrin/discordgo"
+)
+
 // LogicKeeper performs numerous checks on a Wumpus to make sure their stats
 // are within range
 //
@@ -54,19 +58,23 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 	return CorrectedWumpus
 }
 
-func CreditCheck(UserWumpus Wumpus, Cost int) (Pass bool) {
-	if UserWumpus.Credits < Cost {
-		return false
-	}
-	return true
-}
-
-func AgeCheck(UserID string, UserWumpus Wumpus) (Left bool) {
+func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.MessageCreate) (Left bool) {
 	if UserWumpus.Age >= 14 {
 		UserWumpus.Left = true
 		UserWumpus.Age = 14
-		UpdateWumpus(UserID, UserWumpus)
+		UpdateWumpus(event.Author.ID, UserWumpus)
+		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
+		return true
+	} else if UserWumpus.Age > 9 && UserWumpus.Left {
+		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
+		return true
+	} else if UserWumpus.Age > 4 && UserWumpus.Age < 10 && UserWumpus.Left {
+		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk\nPlease run w.view")
+		return true
+	} else if UserWumpus.Left {
+		sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere ...\nPlease run w.view")
 		return true
 	}
+	//Wumpus hasn't left yet :D
 	return false
 }

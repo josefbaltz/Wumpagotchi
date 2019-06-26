@@ -53,3 +53,20 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 	CorrectedWumpus.Left = UserWumpus.Left
 	return CorrectedWumpus
 }
+
+func CreditCheck(UserWumpus Wumpus, Cost int) (Pass bool) {
+	if UserWumpus.Credits < Cost {
+		return false
+	}
+	return true
+}
+
+func AgeCheck(UserID string, UserWumpus Wumpus) (Left bool) {
+	if UserWumpus.Age >= 14 {
+		UserWumpus.Left = true
+		UserWumpus.Age = 14
+		UpdateWumpus(UserID, UserWumpus)
+		return true
+	}
+	return false
+}

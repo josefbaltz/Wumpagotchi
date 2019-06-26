@@ -30,7 +30,7 @@ func leftHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *dis
 	return
 }
 
-func claimHandler(event *discordgo.MessageCreate, session *discordgo.Session) {
+func claimHandler(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"claim" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, false)

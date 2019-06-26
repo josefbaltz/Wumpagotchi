@@ -10,7 +10,7 @@ import (
 func UpdateWumpus(UserID string, NewWumpus Wumpus) (err error) {
 	userKey := datastore.NameKey("User", UserID, nil)
 	if _, err := gcp.Put(ctx, userKey, &NewWumpus); err != nil {
-		fmt.Println("==Warning==\nFailed to add Wumpus to Datastore")
+		fmt.Println("==Warning==\nFailed to update Wumpus in Datastore")
 		return err
 	}
 	return

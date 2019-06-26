@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -58,6 +60,7 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 	return CorrectedWumpus
 }
 
+// LeftCheck checks if the Wumpus has left
 func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.MessageCreate) (Left bool) {
 	if UserWumpus.Age >= 14 {
 		UserWumpus.Left = true
@@ -76,5 +79,48 @@ func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.M
 		return true
 	}
 	//Wumpus hasn't left yet :D
+	return false
+}
+
+// WumpusCheck checks if the user has a Wumpus
+func WumpusCheck(err error, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
+	if err != nil {
+		sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
+		return true
+	}
+	return false
+}
+
+// EnergyCheck checks if the Wumpus has enough energy
+func EnergyCheck(UserWumpus Wumpus, requiredEnergy int, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
+	if UserWumpus.Energy < requiredEnergy {
+		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is too tired!")
+		return true
+	}
+	return false
+}
+
+// SleepCheck checks if the Wumpus is sleeping
+// Can possibly wake up the Wumpus if conditions allow for it
+func SleepCheck(UserWumpus Wumpus, canWake bool, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
+	if UserWumpus.Sleeping {
+		if canWake && UserWumpus.Energy > 0 {
+			UserWumpus.Sleeping = false
+			UpdateWumpus(event.Author.ID, UserWumpus)
+			sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has woken from sleep!")
+			return false
+		}
+		sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is sleeping!")
+		return true
+	}
+	return false
+}
+
+// CreditCheck checks if the user has enough credits
+func CreditCheck(UserWumpus Wumpus, creditsRequired int, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
+	if UserWumpus.Credits < creditsRequired {
+		sendMessage(session, event, event.ChannelID, "You need "+strconv.Itoa(creditsRequired)+"Ꞡ!")
+		return true
+	}
 	return false
 }

@@ -92,13 +92,13 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	}
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, false)
-		if err != nil {
-			sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
+		if WumpusCheck(err, session, event) {
 			return
 		}
-		if UserWumpus.Left == true {
+		// Commented bc it ain't ready yet
+		/*if UserWumpus.Left == true {
 			leftHandler(UserWumpus, event, session)
-		}
+		}*/
 		var State = " "
 		var b bytes.Buffer
 		if UserWumpus.Sleeping {
@@ -173,7 +173,6 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 				return
 			}
 		}
-
 		if UserWumpus.Sick && UserWumpus.Sleeping {
 			State = "Sleeping (Sick)"
 		}
@@ -236,25 +235,20 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	}
 	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
-		LeftCheck(UserWumpus, session, event)
-		if err != nil {
-			sendMessage(session, event, event.ChannelID, "You need a Wumpus first, they are always looking for a friend!")
+		if WumpusCheck(err, session, event) {
 			return
 		}
-		if UserWumpus.Energy < 2 {
-			sendMessage(session, event, event.ChannelID, UserWumpus.Name+" doesn't have enough energy to play!")
+		if LeftCheck(UserWumpus, session, event) {
 			return
 		}
-		if UserWumpus.Credits < 10 {
-			sendMessage(session, event, event.ChannelID, "You need 10Ꞡ to play!")
+		if EnergyCheck(UserWumpus, 2, session, event) {
 			return
 		}
-		if !(UserWumpus.Energy <= 0) {
-			UserWumpus.Energy -= 2
+		if CreditCheck(UserWumpus, 10, session, event) {
+			return
 		}
-		if !(UserWumpus.Credits <= 0) {
-			UserWumpus.Credits -= 10
-		}
+		UserWumpus.Energy -= 2
+		UserWumpus.Credits -= 10
 		UpdateWumpus(event.Author.ID, UserWumpus)
 		rand.Seed(time.Now().UnixNano())
 		var b bytes.Buffer
@@ -264,10 +258,9 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			Reader:      &b,
 		}
 		gemSpot := rand.Intn(6)
-
 		ms := &discordgo.MessageSend{
 			Embed: &discordgo.MessageEmbed{
-				Color: UserWumpus.Color, //Wumpus Leaf Green
+				Color: UserWumpus.Color,
 				Title: "Find the gem!",
 				Fields: []*discordgo.MessageEmbedField{
 					&discordgo.MessageEmbedField{

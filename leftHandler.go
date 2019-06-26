@@ -1,12 +1,23 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
+	"image/png"
+	"math/rand"
+	"strings"
+	"time"
+
 	"github.com/bwmarrin/discordgo"
 )
 
 // leftHandler decides which story the user will get depending on the Wumpus' age
 // Also decides whether or not the user will be able to claim an egg or not
 func leftHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *discordgo.Session) {
+	if UserWumpus.Age <= 0 {
+		go sendMessage(session, event, event.ChannelID, "")
+		return
+	}
 	if UserWumpus.Age > 9 {
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you, They were accepted into Discordiversity and will be studying Wumpology, basically how to be a True Discord Wumpus, With a full ride scholarship! The wumpus shares how they loved all of the time they spent with you.")
 		return
@@ -19,6 +30,63 @@ func leftHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *dis
 	return
 }
 
-func claimHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *discordgo.Session) {
-
+func claimHandler(event *discordgo.MessageCreate, session *discordgo.Session) {
+	messageContent := strings.Split(strings.ToLower(event.Content), " ")
+	if messageContent[0] == CommandPrefix+"claim" && !event.Author.Bot {
+		UserWumpus, err := GetWumpus(event.Author.ID, false)
+		if err != nil {
+			go sendMessage(session, event, event.ChannelID, "There is nothing to claim!")
+			return
+		}
+		if UserWumpus.Age > 9 && UserWumpus.Left && UserWumpus.Health > 0 {
+			rand.Seed(time.Now().UnixNano())
+			newColor := rand.Intn(0xFFFFFF + 1)
+			NewWumpus := Wumpus{
+				Credits:   UserWumpus.Credits,
+				Name:      UserWumpus.Name + " Jr.",
+				Color:     (UserWumpus.Color + newColor) / 2,
+				Age:       0,
+				Health:    10,
+				Hunger:    10,
+				Energy:    10,
+				Happiness: 10,
+				Sick:      false,
+				Sleeping:  false,
+				Left:      false,
+			}
+			UpdateWumpus(event.Author.ID, NewWumpus)
+			var b bytes.Buffer
+			WumpusImageFile := &discordgo.File{
+				Name:        "Wumpus.png",
+				ContentType: "image/png",
+				Reader:      &b,
+			}
+			err := png.Encode(&b, LeafedWumpus("https://orangeflare.me/imagehosting/Wumpagotchi/Happy.png", false, NewWumpus))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			ClaimMessage := &discordgo.MessageSend{
+				Embed: &discordgo.MessageEmbed{
+					Color: NewWumpus.Color,
+					Title: NewWumpus.Name,
+					Fields: []*discordgo.MessageEmbedField{
+						&discordgo.MessageEmbedField{
+							Name:   "Congrats!",
+							Value:  "You have claimed " + NewWumpus.Name + " as your new Wumpus!",
+							Inline: false,
+						},
+					},
+					Image: &discordgo.MessageEmbedImage{
+						URL: "attachment://" + WumpusImageFile.Name,
+					},
+				},
+				Files: []*discordgo.File{WumpusImageFile},
+			}
+			SentMessage, _ := session.ChannelMessageSendComplex(event.ChannelID, ClaimMessage)
+			session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
+			return
+		}
+		go sendMessage(session, event, event.ChannelID, "There is nothing to claim!")
+	}
 }

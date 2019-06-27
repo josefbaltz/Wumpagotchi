@@ -37,7 +37,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 					rand.Seed(time.Now().UnixNano())
 					newColor := rand.Intn(0xFFFFFF + 1)
 					NewWumpus := Wumpus{
-						Credits:   0,
+						Credits:   10,
 						Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
 						Color:     newColor,
 						Age:       0,

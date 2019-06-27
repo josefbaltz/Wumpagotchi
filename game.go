@@ -33,10 +33,11 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil || UserWumpus.Left == true {
 			if len(messageContent) > 1 {
 				if len(strings.TrimPrefix(event.Content, CommandPrefix+"adopt ")) <= 15 {
+					session.ChannelMessageDelete(event.ChannelID, event.ID)
 					rand.Seed(time.Now().UnixNano())
 					newColor := rand.Intn(0xFFFFFF + 1)
 					NewWumpus := Wumpus{
-						Credits:   0,
+						Credits:   10,
 						Name:      strings.TrimPrefix(event.Content, CommandPrefix+"adopt "),
 						Color:     newColor,
 						Age:       0,
@@ -93,6 +94,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		}
 	}
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
+		session.ChannelMessageDelete(event.ChannelID, event.ID)
 		UserWumpus, err := GetWumpus(event.Author.ID, false)
 		if err != nil {
 			go sendMessage(session, event, event.ChannelID, "You need a Wumpus first!")
@@ -258,6 +260,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			UpdateWumpus(event.Author.ID, UserWumpus)
 			return
 		}
+		session.ChannelMessageDelete(event.ChannelID, event.ID)
 		UserWumpus.Energy -= 2
 		UserWumpus.Credits -= 10
 		UpdateWumpus(event.Author.ID, UserWumpus)

@@ -43,6 +43,9 @@ func leftHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *dis
 	return
 }
 
+// claimHandler checks to see if the user is eligible to claim a new Wumpus if so It generates a wumpus as normal but the name is predetermined and the color is also calculated, the user also maintains their credits
+// The name is based off of the original name for example if the user's Wumpus' name was Wump the new name would be Wump Jr.
+// The color is 80% of the original Wumpus and 20% of a randomly generated Base16 Number which can go as high as 0xFFFFFF
 func claimHandler(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"claim" && !event.Author.Bot {
@@ -106,5 +109,6 @@ func claimHandler(session *discordgo.Session, event *discordgo.MessageCreate) {
 			return
 		}
 		go sendMessage(session, event, event.ChannelID, "There is nothing to claim!")
+		return
 	}
 }

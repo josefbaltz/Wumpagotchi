@@ -29,6 +29,8 @@ type Wumpus struct {
 
 func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
+	// Adopt a Wumpus command
+	// w.adopt
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
 		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil || UserWumpus.Left == true {
 			if len(messageContent) > 1 {
@@ -93,6 +95,8 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 			return
 		}
 	}
+	// View your wumpus command
+	// w.view
 	if messageContent[0] == CommandPrefix+"view" && !event.Author.Bot {
 		session.ChannelMessageDelete(event.ChannelID, event.ID)
 		UserWumpus, err := GetWumpus(event.Author.ID, false)
@@ -240,6 +244,8 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 		return
 	}
+	// Play with your wumpus command
+	// w.play
 	if messageContent[0] == CommandPrefix+"play" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
 		if err != nil {

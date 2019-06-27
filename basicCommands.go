@@ -53,6 +53,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 		return
 	}
 	// Store commands
+	// w.buy
 	if messageContent[0] == CommandPrefix+"buy" && !event.Author.Bot {
 		UserWumpus, err := GetWumpus(event.Author.ID, true)
 		if err != nil {
@@ -65,6 +66,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 		messageContent := strings.Split(strings.ToLower(event.Content), " ")
 		if len(messageContent) > 1 {
 			// Floop buy code
+			// w.buy floop
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "floop" {
 				checkReturn := CreditCheck(UserWumpus, 5, session, event)
 				if checkReturn {
@@ -108,6 +110,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 			}
 
 			// Gummy gem buy code
+			// w.buy gummy, w.buy gummy gem
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "gummy" || strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "gummy gem" {
 				checkReturn := CreditCheck(UserWumpus, 10, session, event)
 				if checkReturn {
@@ -160,6 +163,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 			}
 
 			// Medicine buy code
+			// w.buy medicine
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "medicine" {
 				checkReturn := CreditCheck(UserWumpus, 15, session, event)
 				if checkReturn {
@@ -194,6 +198,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 			}
 
 			// Salad buy code
+			// w.buy salad
 			if strings.ToLower(strings.TrimPrefix(event.Content, CommandPrefix+"buy ")) == "salad" {
 				checkReturn := CreditCheck(UserWumpus, 30, session, event)
 				if checkReturn {

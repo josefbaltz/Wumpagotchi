@@ -76,6 +76,9 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 }
 
 // LeftCheck checks if the Wumpus has left
+// If the user's wumpus has left, it'll tell them to run the w.view command
+// This tells the user different things depending upon if the wumpus is in good conditions
+// if the Wumpus hasn't left yet this will return false
 func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.MessageCreate) (Left bool) {
 	if UserWumpus.Age >= 14 {
 		UserWumpus.Left = true
@@ -98,6 +101,8 @@ func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.M
 }
 
 // EnergyCheck checks if the Wumpus has enough energy
+// If the user's wumpus doesn't have enough energy it will tell the user their wumpus is too tired and return true
+// If the user's wumpus has enough energy it will return false
 func EnergyCheck(UserWumpus Wumpus, requiredEnergy int, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
 	if UserWumpus.Energy < requiredEnergy {
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" is too tired!")
@@ -106,8 +111,11 @@ func EnergyCheck(UserWumpus Wumpus, requiredEnergy int, session *discordgo.Sessi
 	return false
 }
 
-// SleepCheck checks if the Wumpus is sleeping
-// Can possibly wake up the Wumpus if conditions allow for it
+// SleepCheck checks if the Wumpus is sleeping and if they can be woken up
+// If the user's wumpus has more than 0 energy it will wake them up from sleep and return a wumpus object that reflects that they are awake
+// Additionally this will also alert the user their wumpus was woken up
+// If the user's wumpus has 0 energy it will tell the user that they are sleeping and return an unmodified Wumpus
+// If theu user's wumpus isn't sleeping it will just return an umodified Wumpus
 func SleepCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.MessageCreate) (UpdatedWumpus Wumpus) {
 	if UserWumpus.Sleeping {
 		if UserWumpus.Energy > 0 {
@@ -122,6 +130,8 @@ func SleepCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.
 }
 
 // CreditCheck checks if the user has enough credits
+// If the user has enough credits it return false
+// If the user doesn't have enough credits, it will alert them they need however many credits they need and then return true
 func CreditCheck(UserWumpus Wumpus, creditsRequired int, session *discordgo.Session, event *discordgo.MessageCreate) (noPass bool) {
 	if UserWumpus.Credits < creditsRequired {
 		go sendMessage(session, event, event.ChannelID, "You need "+strconv.Itoa(creditsRequired)+"Ꞡ!")

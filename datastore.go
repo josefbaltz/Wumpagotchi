@@ -6,7 +6,7 @@ import (
 	"cloud.google.com/go/datastore"
 )
 
-//UpdateWumpus - Adds a new wumpus to the database
+//UpdateWumpus - Updates/Adds a wumpus to the datastore
 func UpdateWumpus(UserID string, NewWumpus Wumpus) (err error) {
 	userKey := datastore.NameKey("User", UserID, nil)
 	if _, err := gcp.Put(ctx, userKey, &NewWumpus); err != nil {
@@ -16,7 +16,7 @@ func UpdateWumpus(UserID string, NewWumpus Wumpus) (err error) {
 	return
 }
 
-//GetWumpus - Retrieves a wumpus from the database
+//GetWumpus - Retrieves a wumpus from the datastore
 func GetWumpus(UserID string, ignoreWarning bool) (UserWumpus Wumpus, err error) {
 	userKey := datastore.NameKey("User", UserID, nil)
 	if err := gcp.Get(ctx, userKey, &UserWumpus); err != nil {
@@ -29,7 +29,7 @@ func GetWumpus(UserID string, ignoreWarning bool) (UserWumpus Wumpus, err error)
 	return UserWumpus, nil
 }
 
-//DeleteWumpus - Deletes a wumpus from the database, NOT TO BE CONFUSED WITH MARKING ONE AS LEFT
+//DeleteWumpus - Deletes a wumpus from the datastore, NOT TO BE CONFUSED WITH MARKING ONE AS LEFT
 func DeleteWumpus(UserID string) (err error) {
 	userKey := datastore.NameKey("User", UserID, nil)
 	if err := gcp.Delete(ctx, userKey); err != nil {

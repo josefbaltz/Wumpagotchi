@@ -189,7 +189,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		ms := &discordgo.MessageSend{
 			Embed: &discordgo.MessageEmbed{
 				Color: UserWumpus.Color,
-				Title: UserWumpus.Name,
+				Title: event.Author.Username + "'s " + UserWumpus.Name,
 				Fields: []*discordgo.MessageEmbedField{
 					&discordgo.MessageEmbedField{
 						Name:   "Credits",

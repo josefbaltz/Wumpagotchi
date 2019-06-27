@@ -14,23 +14,32 @@ import (
 // leftHandler decides which story the user will get depending on the Wumpus' age
 // Also decides whether or not the user will be able to claim an egg or not
 func leftHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *discordgo.Session) {
+	//Changed all from sendMessage to the built in method, the time was too short for users to read the message, may re-write the sendMessage function later to support custom sleep times
 	if UserWumpus.Health <= 0 {
-		go sendMessage(session, event, event.ChannelID, "")
-		go sendMessage(session, event, event.ChannelID, "To start over with a new Wumpus, type 'w.adopt'")
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
+		SentMessage, _ := session.ChannelMessageSend(event.ChannelID, "Wumpus in the Hospital\nTo start over with a new Wumpus, type 'w.adopt'")
+		time.Sleep(time.Second * 20)
+		session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 		return
 	}
 	if UserWumpus.Age > 9 {
-		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you, They were accepted into Discordiversity and will be studying Wumpology, basically how to be a True Discord Wumpus, With a full ride scholarship! The wumpus shares how they loved all of the time they spent with you.")
-		go sendMessage(session, event, event.ChannelID, "You can type 'w.claim' to claim your Wumpus' egg, or you can type 'w.adopt' to restart with a whole new Wumpus")
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
+		SentMessage, _ := session.ChannelMessageSend(event.ChannelID, UserWumpus.Name+" has something important to tell you, They were accepted into Discordiversity and will be studying Wumpology, basically how to be a True Discord Wumpus, With a full ride scholarship! The wumpus shares how they loved all of the time they spent with you.\nYou can type 'w.claim' to claim your Wumpus' egg, or you can type 'w.adopt' to restart with a whole new Wumpus")
+		time.Sleep(time.Second * 20)
+		session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 		return
 	}
 	if UserWumpus.Age > 4 && UserWumpus.Age < 10 {
-		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk with you. They enjoyed the time that they spent with you, but want to pursue greener pastures. They’ll be packing their things and leaving soon in search of one.")
-		go sendMessage(session, event, event.ChannelID, "To start over with a new Wumpus, type 'w.adopt'")
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
+		SentMessage, _ := session.ChannelMessageSend(event.ChannelID, UserWumpus.Name+" wants to talk with you. They enjoyed the time that they spent with you, but want to pursue greener pastures. They’ll be packing their things and leaving soon in search of one.\nTo start over with a new Wumpus, type 'w.adopt'")
+		time.Sleep(time.Second * 20)
+		session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 		return
 	}
-	go sendMessage(session, event, event.ChannelID, "You can’t seem to find the wumpus anywhere. You don’t worry too much and head for the fridge for a quick snack. As you head towards the fridge you see a note addressed to "+event.Author.Username+". You open and read, Hey "+event.Author.Username+", I’m sorry but i’ve decided to leave without telling you first, all I wanted was a friend but I’m constantly stressed out living with you.")
-	go sendMessage(session, event, event.ChannelID, "To start over with a new Wumpus, type 'w.adopt'")
+	session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
+	SentMessage, _ := session.ChannelMessageSend(event.ChannelID, "You can’t seem to find the wumpus anywhere. You don’t worry too much and head for the fridge for a quick snack. As you head towards the fridge you see a note addressed to "+event.Author.Username+". You open and read, Hey "+event.Author.Username+", I’m sorry but i’ve decided to leave without telling you first, all I wanted was a friend but I’m constantly stressed out living with you.\nTo start over with a new Wumpus, type 'w.adopt'")
+	time.Sleep(time.Second * 20)
+	session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 	return
 }
 

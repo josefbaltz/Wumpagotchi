@@ -77,16 +77,16 @@ func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.M
 		UserWumpus.Left = true
 		UserWumpus.Age = 14
 		UpdateWumpus(event.Author.ID, UserWumpus)
-		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease view your Wumpus (w.view)")
 		return true
 	} else if UserWumpus.Age > 9 && UserWumpus.Left {
-		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease view your Wumpus (w.view)")
 		return true
 	} else if UserWumpus.Age > 4 && UserWumpus.Age < 10 && UserWumpus.Left {
-		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk\nPlease view your Wumpus (w.view)")
 		return true
 	} else if UserWumpus.Left {
-		go sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere ...\nPlease run w.view")
+		go sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere ...\nPlease view your Wumpus (w.view)")
 		return true
 	}
 	//Wumpus hasn't left yet :D

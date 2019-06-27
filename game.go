@@ -318,7 +318,6 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 		SentMessage, err := session.ChannelMessageSendComplex(event.ChannelID, ms)
 		if err != nil {
 			fmt.Println("ya hecked up lol, here's the thing\n" + err.Error())
-			return
 		}
 		for i := 0; i <= 2; i++ {
 			time.Sleep(2 * time.Second)

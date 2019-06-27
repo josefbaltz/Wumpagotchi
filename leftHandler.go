@@ -44,7 +44,7 @@ func claimHandler(session *discordgo.Session, event *discordgo.MessageCreate) {
 			NewWumpus := Wumpus{
 				Credits:   UserWumpus.Credits,
 				Name:      UserWumpus.Name + " Jr.",
-				Color:     (UserWumpus.Color * (8 / 10)) + (newColor * (2 / 10)),
+				Color:     (UserWumpus.Color + newColor) / 2,
 				Age:       0,
 				Health:    10,
 				Hunger:    10,

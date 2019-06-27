@@ -14,7 +14,7 @@ import (
 // leftHandler decides which story the user will get depending on the Wumpus' age
 // Also decides whether or not the user will be able to claim an egg or not
 func leftHandler(UserWumpus Wumpus, event *discordgo.MessageCreate, session *discordgo.Session) {
-	if UserWumpus.Age <= 0 {
+	if UserWumpus.Health <= 0 {
 		go sendMessage(session, event, event.ChannelID, "")
 		go sendMessage(session, event, event.ChannelID, "To start over with a new Wumpus, type 'w.adopt'")
 		return

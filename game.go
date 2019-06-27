@@ -31,7 +31,7 @@ func game(session *discordgo.Session, event *discordgo.MessageCreate) {
 	messageContent := strings.Split(strings.ToLower(event.Content), " ")
 	if messageContent[0] == CommandPrefix+"adopt" && !event.Author.Bot {
 		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
-		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil {
+		if UserWumpus, err := GetWumpus(event.Author.ID, true); err != nil || UserWumpus.Left == true {
 			if len(messageContent) > 1 {
 				if len(strings.TrimPrefix(event.Content, CommandPrefix+"adopt ")) <= 15 {
 					rand.Seed(time.Now().UnixNano())

@@ -25,10 +25,13 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 
 	if UserWumpus.Health > 10 {
 		CorrectedWumpus.Health = 10
+		CorrectedWumpus.Left = UserWumpus.Left
 	} else if UserWumpus.Health < 0 {
 		CorrectedWumpus.Health = 0
+		CorrectedWumpus.Left = true
 	} else {
 		CorrectedWumpus.Health = UserWumpus.Health
+		CorrectedWumpus.Left = UserWumpus.Left
 	}
 
 	if UserWumpus.Energy > 10 {
@@ -64,7 +67,6 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 	CorrectedWumpus.Color = UserWumpus.Color
 	CorrectedWumpus.Sick = UserWumpus.Sick
 	CorrectedWumpus.Sleeping = UserWumpus.Sleeping
-	CorrectedWumpus.Left = UserWumpus.Left
 	CorrectedWumpus.Name = UserWumpus.Name
 	return CorrectedWumpus
 }

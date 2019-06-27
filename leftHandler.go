@@ -45,10 +45,14 @@ func claimHandler(session *discordgo.Session, event *discordgo.MessageCreate) {
 		if UserWumpus.Age > 9 && UserWumpus.Left && UserWumpus.Health > 0 {
 			rand.Seed(time.Now().UnixNano())
 			newColor := rand.Intn(0xFFFFFF + 1)
+			weightedColor := int((float64(UserWumpus.Color) * 0.8) + (float64(newColor) * 0.2))
+			if weightedColor > 0xFFFFFF {
+				weightedColor = 0xFFFFFF
+			}
 			NewWumpus := Wumpus{
 				Credits:   UserWumpus.Credits,
 				Name:      UserWumpus.Name + " Jr.",
-				Color:     (UserWumpus.Color + newColor) / 2,
+				Color:     weightedColor,
 				Age:       0,
 				Health:    10,
 				Hunger:    10,

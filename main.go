@@ -62,12 +62,15 @@ func main() {
 }
 
 func sendMessage(session *discordgo.Session, event *discordgo.MessageCreate, channel string, message string) {
-	sentMessage, _ := session.ChannelMessageSend(channel, message)
-	time.Sleep(10 * time.Second)
-	err := session.ChannelMessageDelete(event.ChannelID, event.ID)
+	sentMessage, err := session.ChannelMessageSend(channel, message)
 	if err != nil {
 		fmt.Println(err)
 	}
+	err = session.ChannelMessageDelete(event.ChannelID, event.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	time.Sleep(10 * time.Second)
 	session.ChannelMessageDelete(sentMessage.ChannelID, sentMessage.ID)
 }
 
@@ -76,10 +79,10 @@ func sendEmbed(session *discordgo.Session, event *discordgo.MessageCreate, chann
 	if err != nil {
 		fmt.Println(err)
 	}
-	time.Sleep(15 * time.Second)
 	err = session.ChannelMessageDelete(event.ChannelID, event.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
+	time.Sleep(15 * time.Second)
 	session.ChannelMessageDelete(sentMessage.ChannelID, sentMessage.ID)
 }

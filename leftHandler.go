@@ -92,6 +92,7 @@ func claimHandler(session *discordgo.Session, event *discordgo.MessageCreate) {
 				Files: []*discordgo.File{WumpusImageFile},
 			}
 			SentMessage, _ := session.ChannelMessageSendComplex(event.ChannelID, ClaimMessage)
+			time.Sleep(15 * time.Second)
 			session.ChannelMessageDelete(SentMessage.ChannelID, SentMessage.ID)
 			return
 		}

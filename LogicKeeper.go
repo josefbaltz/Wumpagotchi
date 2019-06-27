@@ -80,12 +80,15 @@ func LogicKeeper(UserWumpus Wumpus) (CorrectedWumpus Wumpus) {
 // This tells the user different things depending upon if the wumpus is in good conditions
 // if the Wumpus hasn't left yet this will return false
 func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.MessageCreate) (Left bool) {
-	if UserWumpus.Age >= 14 {
+	if UserWumpus.Left && UserWumpus.Health <= 0 {
+		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+"Appears to be in critical condition\nPlease view your Wumpus (w.view)")
+		return true
+	} else if UserWumpus.Age >= 14 {
 		UserWumpus.Left = true
 		UserWumpus.Age = 14
 		UpdateWumpus(event.Author.ID, UserWumpus)
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease view your Wumpus (w.view)")
-		return true
+		return trueb
 	} else if UserWumpus.Age > 9 && UserWumpus.Left {
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease view your Wumpus (w.view)")
 		return true
@@ -93,7 +96,7 @@ func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.M
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" wants to talk\nPlease view your Wumpus (w.view)")
 		return true
 	} else if UserWumpus.Left {
-		go sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere ...\nPlease view your Wumpus (w.view)")
+		go sendMessage(session, event, event.ChannelID, "You can't seem to find "+UserWumpus.Name+" anywhere...\nPlease view your Wumpus (w.view)")
 		return true
 	}
 	//Wumpus hasn't left yet :D

@@ -89,7 +89,7 @@ func loginLogic(session *discordgo.Session, event *discordgo.Ready) {
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		session.UpdateStatus(0, "with "+strconv.Itoa(len(wumpus)))
+		session.UpdateStatus(0, "with "+strconv.Itoa(len(wumpus))+" Wumpi")
 		time.Sleep(20 * time.Second)
 	}
 }

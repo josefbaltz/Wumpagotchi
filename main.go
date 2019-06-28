@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -57,6 +58,7 @@ func main() {
 	}
 
 	// Add Event Handlers so whenever an event happens (ie A user sends a message, Joins a voice channel, deletes a message, etc.) the bot will run code
+	wump.AddHandler(loginLogic)
 	wump.AddHandler(basicCommands)
 	wump.AddHandler(game)
 	wump.AddHandler(messageCredits)
@@ -75,6 +77,21 @@ func main() {
 	<-sc
 	wump.Close()
 	gcp.Close()
+}
+
+// loginLogic is a function that handles when the bot logs in
+func loginLogic(session *discordgo.Session, event *discordgo.Ready) {
+	for 1 == 1 {
+		query := datastore.NewQuery("User")
+		var wumpus []Wumpus
+		var err error
+		_, err = gcp.GetAll(ctx, query, &wumpus)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		session.UpdateStatus(0, "with "+strconv.Itoa(len(wumpus)))
+		time.Sleep(20 * time.Second)
+	}
 }
 
 // sendMessage is a function that will delete the message that fired the event, send a message, wait 10 seconds, and then delete the message that the bot sent

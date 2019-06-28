@@ -33,7 +33,7 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
-					Name:   CommandPrefix + "buy <Item>",
+					Name:   CommandPrefix + "buy (Item)",
 					Value:  "Buy items for your Wumpus! To view what items you can buy, just say w.buy",
 					Inline: true,
 				},
@@ -47,9 +47,24 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 					Value:  "Go mining with your Wumpus!",
 					Inline: true,
 				},
+				&discordgo.MessageEmbedField{
+					Name:   CommandPrefix + "invite",
+					Value:  "Invite Wumpagotchi to your own server!",
+					Inline: true,
+				},
 			},
 		}
 		go sendEmbed(session, event, event.ChannelID, HelpEmbed)
+		return
+	}
+	if messageContent[0] == CommandPrefix+"invite" && !event.Author.Bot {
+		userChannel, err := session.UserChannelCreate(event.Author.ID)
+		if err != nil {
+			go sendMessage(session, event, event.ChannelID, "Sorry, our trained team of Wumpi were unable to deliver the invite link to your DMs!")
+			return
+		}
+		session.MessageReactionAdd(event.ChannelID, event.Message.ID, "❤️")
+		session.ChannelMessageSend(userChannel.ID, "An invite link delivered by the best of the best Ninja Wumpus\nhttps://discordapp.com/api/oauth2/authorize?client_id=592775891726368768&permissions=388160&scope=bot")
 		return
 	}
 	// Store commands

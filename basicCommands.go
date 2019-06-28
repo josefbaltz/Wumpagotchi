@@ -63,8 +63,10 @@ func basicCommands(session *discordgo.Session, event *discordgo.MessageCreate) {
 			go sendMessage(session, event, event.ChannelID, "Sorry, our trained team of Wumpi were unable to deliver the invite link to your DMs!")
 			return
 		}
-		session.MessageReactionAdd(event.ChannelID, event.Message.ID, "❤️")
+		session.MessageReactionAdd(event.ChannelID, event.Message.ID, "💜")
 		session.ChannelMessageSend(userChannel.ID, "An invite link delivered by the best of the best Ninja Wumpus\nhttps://discordapp.com/api/oauth2/authorize?client_id=592775891726368768&permissions=388160&scope=bot")
+		time.Sleep(12 * time.Second)
+		session.ChannelMessageDelete(event.ChannelID, event.Message.ID)
 		return
 	}
 	// Store commands

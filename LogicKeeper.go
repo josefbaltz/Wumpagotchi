@@ -88,7 +88,7 @@ func LeftCheck(UserWumpus Wumpus, session *discordgo.Session, event *discordgo.M
 		UserWumpus.Age = 14
 		UpdateWumpus(event.Author.ID, UserWumpus)
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease view your Wumpus (w.view)")
-		return trueb
+		return true
 	} else if UserWumpus.Age > 9 && UserWumpus.Left {
 		go sendMessage(session, event, event.ChannelID, UserWumpus.Name+" has something important to tell you!\nPlease view your Wumpus (w.view)")
 		return true

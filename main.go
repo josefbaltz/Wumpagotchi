@@ -89,7 +89,10 @@ func loginLogic(session *discordgo.Session, event *discordgo.Ready) {
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		session.UpdateStatus(0, "with "+strconv.Itoa(len(wumpus))+" Wumpi")
+		err = session.UpdateGameStatus(0, "with "+strconv.Itoa(len(wumpus))+" Wumpi")
+		if err != nil {
+			fmt.Println("Error updating status:", err)
+		}
 		time.Sleep(20 * time.Second)
 	}
 }

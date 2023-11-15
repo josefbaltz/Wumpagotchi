@@ -4,11 +4,11 @@ Wumpagotchi is a bot made for the 2019 Discord Hack Week and later rewritten for
 [Invite me!](https://discordapp.com/api/oauth2/authorize?client_id=592775891726368768&permissions=388160&scope=bot)
 
 ## Commands
-  - w.adopt <Wumpus Name>
-  - w.play
-  - w.view
-  - w.buy (item)
-  - w.invite
+  - /adopt (wumpus name)
+  - /play
+  - /view
+  - /buy (item)
+  - /invite
 
 ## Credits
   - yosef__ - coding

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,6 +14,21 @@ import (
 	"github.com/joho/godotenv"
 	"google.golang.org/api/option"
 )
+
+// WUMPUS STRUCT
+type Wumpus struct {
+	name      string
+	age       int
+	color     int
+	credits   int
+	energy    int
+	happiness int
+	health    int
+	hunger    int
+	sick      bool
+	sleeping  bool
+	gone      bool
+}
 
 // MAIN
 func main() {
@@ -65,18 +81,13 @@ func main() {
 			Type:        discordgo.ChatApplicationCommand,
 		},
 		{
-			Name:        "inventory",
-			Description: "look at the items in your inventory",
+			Name:        "invite",
+			Description: "sends an invite link for wumpagotchi",
 			Type:        discordgo.ChatApplicationCommand,
 		},
 		{
 			Name:        "play",
 			Description: "mine with your wumpus",
-			Type:        discordgo.ChatApplicationCommand,
-		},
-		{
-			Name:        "use",
-			Description: "use an item on your wumpus",
 			Type:        discordgo.ChatApplicationCommand,
 		},
 		{
@@ -141,14 +152,10 @@ func commandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		buy(s, i)
 	case "credit":
 		credit(s, i)
-	case "inventory":
-		inventory(s, i)
+	case "invite":
+		invite(s, i)
 	case "play":
 		play(s, i)
-	case "sell":
-		sell(s, i)
-	case "use":
-		use(s, i)
 	case "view":
 		view(s, i)
 	}
@@ -158,15 +165,22 @@ func commandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 // adopt
 // buy [item]
 // credit
-// inventory
+// invite
 // play
-// sell [item]
-// use [item]
 // view
 
 // ADOPT
 func adopt(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	var UID
+	if i.User != nil {
+		UID = i.User.ID
+	} else {
+		UID = i.Member.User.ID
+	}
 
+	if 
+	rand.Seed(time.Now().UnixNano())
+	newColor := rand.Intn(0xFFFFFF + 1)
 }
 
 // BUY
@@ -179,8 +193,8 @@ func credit(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 }
 
-// INVENTORY
-func inventory(s *discordgo.Session, i *discordgo.InteractionCreate) {
+// INVITE
+func invite(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 }
 
@@ -189,21 +203,14 @@ func play(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 }
 
-// SELL
-func sell(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	item := i.ApplicationCommandData().Options[0].Options[0].Value.(string)
-}
-
-// USE
-func use(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	item := i.ApplicationCommandData().Options[0].Options[0].Value.(string)
-}
-
 // VIEW
 func view(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 }
 
-// -- DATABASE FUNCTIONS
+// -- GCP FUNCTIONS
 
-// -- LOGIC FUNCTIONS
+// TIME
+func time() {
+	return
+}

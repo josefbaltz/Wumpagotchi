@@ -11,6 +11,6 @@ Commands:
   - w.invite
 
 Creators:
-  - OrangeFlare#1337 - Coding
-  - nooby#1337 - Coding
-  - Manface#0434 - Art (Thank U Soo much!)
+  - yosef__ - Coding
+  - nnoooobbyy - Coding
+  - \_reactive\_ - Art (Thank U Soo much!)

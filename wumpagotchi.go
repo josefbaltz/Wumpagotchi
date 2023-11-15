@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// MAIN
 func main() {
 	// Load .env
 	err := godotenv.Load()
@@ -42,3 +43,21 @@ func main() {
 	session.Close()
 	fmt.Println("[Wumpagotchi] Offline")
 }
+
+// -- HANDLER FUNCTIONS
+
+// CONNECT
+
+// DISCONNECT
+
+// READY
+
+// RESUMED
+
+// COMMANDHANDLER
+
+// -- COMMAND FUNCTIONS
+
+// -- DATABASE FUNCTIONS
+
+// -- LOGIC FUNCTIONS

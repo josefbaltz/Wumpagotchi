@@ -30,7 +30,7 @@ func main() {
 
 	// Build Firestore client
 	ctx := context.Background()
-	d, _ := base64.StdEncoding.DecodeString(os.Getenv("GPC_CREDS_BASE64"))
+	d, _ := base64.StdEncoding.DecodeString(os.Getenv("GCP_CREDS_BASE64"))
 	fs, err := firestore.NewClient(ctx, os.Getenv("GCP_PROJECT_ID"), option.WithCredentialsJSON(d))
 	if err != nil {
 		log.Fatal(err)

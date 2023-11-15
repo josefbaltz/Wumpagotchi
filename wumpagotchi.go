@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -9,24 +8,18 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
-// Declare and gather program arguments
-var discordToken string
-
-func init() {
-	flag.StringVar(&discordToken, "t", "", "Discord API Token")
-	flag.Parse()
-}
-
 func main() {
-	// Terminate if no token provided
-	if discordToken == "" {
-		log.Fatal("No token provided")
+	// Load .env
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// Build session
-	session, err := discordgo.New("Bot " + discordToken)
+	session, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
 	}
